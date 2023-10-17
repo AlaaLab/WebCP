@@ -1,4 +1,4 @@
-# webCP
+# WebCP
 conformal prediction in zero-shot settings
 
 
