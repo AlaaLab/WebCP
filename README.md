@@ -2,6 +2,7 @@
 Conformal prediction in zero-shot settings
 
 ## as of 10/14/2023 -- THIS REPOSITORY IS A WORK IN PROGRESS! 
+We are currently in the process of migrating from the /main and /dutta branch in our original experimental repository: https://github.com/AlaaLab/zero-shot-conformal-prediction 
 
 
 Required Packages:
