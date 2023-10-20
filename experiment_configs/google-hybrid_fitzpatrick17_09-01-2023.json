@@ -1,0 +1,9 @@
+{
+    "test_image_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-fitz17k\\fitzpatrick-17k",
+    "calib_image_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-fitz17k2\\web-scraping_0906_google-hybrid_fitzpatrick_50size",
+    "context_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-fitz17k2\\bert-base_0906_google-hybrid_fitzpatrick17k_50size",
+    "intermediate_data_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-fitz17k2\\image_plausibilities",
+    "results_data_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_09-10_1",
+    "plausibility_checkpoint": "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg",
+    "classification_checkpoint": "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+}

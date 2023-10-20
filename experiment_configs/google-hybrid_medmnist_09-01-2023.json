@@ -1,0 +1,9 @@
+{
+    "test_image_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\selenium-medmnist\\medmnist_microscopy",
+    "calib_image_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-medmnist\\web_scraping_0922_google_medmnist",
+    "context_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-medmnist\\msmarco-bert_0922_google_medmnist",
+    "intermediate_data_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-medmnist\\image_plausibilities",
+    "results_data_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_09-24_1",
+    "plausibility_checkpoint": "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg",
+    "classification_checkpoint": "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+}
