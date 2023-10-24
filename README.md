@@ -20,6 +20,11 @@ NOTE: List may not be comprehensive, is work in progress
 Guide to formatting input folders
 NOTE: Every Dataset has .py file in the util directory. Each .py file contains two OrderedDicts. One is for the specific label names and other is for the generic label names. The key for each label entry is the label id. These keys are sequential integers (i.e. "1" for 1st Label, "2" for 2nd Label, "3" for 3rd Label)
 
+Google Drive of Data Folders (Test Set and Data-mined Calibration Set + Context Preprocessing):
+Google-MedMNIST: https://drive.google.com/file/d/1QrIAPwQUtEIKX--E8CDlq4SkXo5DmBEn/view?usp=sharing 
+Google-Fitz17k: https://drive.google.com/file/d/1KVjTUXRMrxSl9rhrAe4T0ExtYdrKgiZU/view?usp=sharing 
+Note: Code for performing data-mining, context extraction, and context plausibility generation are still in the zero-shot-conformal-prediction folder. Currently in the process of porting it to this repo.
+
 All data folders (image directory, context directory, intermediate data, etc.) are formatted as such:
 1. Primary containing folder
 2. Subfolders named as sequential numbers (1, 2, 3, 4, ...). 
