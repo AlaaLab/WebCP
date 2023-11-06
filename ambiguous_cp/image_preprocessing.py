@@ -9,11 +9,21 @@ from PIL import Image
 import torch
 import json
 import open_clip
+import argparse
 
+# Scan environment
+script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
+base_path = script_path.parent.absolute()
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("CUDA ENABLED: {}".format(str(torch.cuda.is_available())))
+
+# Parse Arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('--exp', type=str, help='Experiment in experiment_configs to run')
+args = parser.parse_args()
+
 # Load Config
-reader = open("C:\\Documents\\Alaa Lab\\CP-CLIP\\WebCP\\experiment_configs\\google-hybrid_medmnist_09-01-2023.json")
+reader = open(base_path + "\\experiment_configs\\"  + args.exp)
 config = json.load(reader)
 CALIB_IMAGE_DIRECTORY = config["calib_image_directory"]
 IMAGE_LOGITS = config["intermediate_data_directory"]

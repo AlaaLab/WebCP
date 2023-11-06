@@ -116,3 +116,9 @@ FITZ17K_CLASSES = OrderedDict({
     "112": "ehlers danlos syndrome",
     "113": "tungiasis",
 })
+
+generic_classes = {}
+for i in range(0, 114):
+    generic_classes[str(i)] = "skin disease"
+
+FITZ17K_GENERIC_CLASSES = OrderedDict(generic_classes)

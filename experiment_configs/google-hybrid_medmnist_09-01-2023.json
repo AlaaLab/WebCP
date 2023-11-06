@@ -5,5 +5,6 @@
     "intermediate_data_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-medmnist\\image_plausibilities",
     "results_data_directory": "C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_09-24_1",
     "plausibility_checkpoint": "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg",
-    "classification_checkpoint": "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+    "classification_checkpoint": "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224",
+    "dataset": "MedMNIST"
 }

@@ -1,13 +1,5 @@
 import sys
 import os
-base_path = 'C:\\Documents\\Alaa Lab\\CP-CLIP\\WebCP'
-sys.path.append(base_path + '\\cp')
-sys.path.append(base_path + '\\utils')
-from pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
-from fitz17k_classes import FITZ17K_CLASSES
-from medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
-from conformal_prediction_methods import *
-from metrics import *
 
 from pathlib import Path
 import pandas as pd
@@ -18,6 +10,17 @@ import torch
 from matplotlib import pyplot as plt
 import pickle
 import json
+import argparse
+
+script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
+base_path = script_path.parent.absolute()
+sys.path.append(base_path + '\\cp')
+sys.path.append(base_path + '\\utils')
+from pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
+from fitz17k_classes import FITZ17K_CLASSES, FITZ17K_GENERIC_CLASSES
+from medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
+from conformal_prediction_methods import *
+from metrics import *
 
 # Methods
 def performance_report(threshold, calib_sim_score_arr, test_sim_score_arr, calib_true_class_arr, test_true_class_arr):
@@ -38,15 +41,21 @@ def performance_report(threshold, calib_sim_score_arr, test_sim_score_arr, calib
     print(f"Test Set: {np.mean(test_samplewise_efficiency)}")
     return (calib_coverage, np.mean(calib_samplewise_efficiency), test_coverage, np.mean(test_samplewise_efficiency))
 
+#Parse Arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('--exp', type=str, help='Experiment in experiment_configs to run')
+parser.add_argument('--out', type=str, help='Where to output charts')
+args = parser.parse_args()
+
 # Parameters
-reader = open("C:\\Documents\\Alaa Lab\\CP-CLIP\\WebCP\\experiment_configs\\google-hybrid_medmnist_09-01-2023.json")
+reader = open(base_path + "\\experiment_configs\\"  + args.exp)
 config = json.load(reader)
 RESULTS_DIRECTORY = config["results_data_directory"]
-OUTPUT_RESULT_DIR = "C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_09-10_1\\Charts"
-CALIB_SIZE_CURVE = False
-ALPHA_CURVE = False
-UNCERTAIN_HIST = False
-PLAUSIBILITY_HISTOGRAM = False
+OUTPUT_RESULT_DIR = args.out
+CALIB_SIZE_CURVE = True
+ALPHA_CURVE = True
+UNCERTAIN_HIST = True
+PLAUSIBILITY_HISTOGRAM = True
 ORACLE = True
 ALPHA = 0.5
 NUM_SAMPLES = 100

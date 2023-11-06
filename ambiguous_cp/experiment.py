@@ -1,13 +1,5 @@
 import sys
 import os
-base_path = 'C:\\Documents\\Alaa Lab\\CP-CLIP\\WebCP'
-sys.path.append(base_path + '\\cp')
-sys.path.append(base_path + '\\utils')
-from pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
-from fitz17k_classes import FITZ17K_CLASSES
-from medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
-from conformal_prediction_methods import *
-from metrics import *
 
 from pathlib import Path
 import pandas as pd
@@ -18,16 +10,38 @@ import torch
 import json
 import open_clip
 from transformers import AutoTokenizer, CLIPTextModelWithProjection, CLIPModel, CLIPProcessor
+import argparse
+
+script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
+base_path = script_path.parent.absolute()
+sys.path.append(base_path + '\\cp')
+sys.path.append(base_path + '\\utils')
+from pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
+from fitz17k_classes import FITZ17K_CLASSES, FITZ17K_GENERIC_CLASSES
+from medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
+from conformal_prediction_methods import *
+from metrics import *
+
+#Parse Arguments
+#-----------------------------------------------------------------------------------
+parser = argparse.ArgumentParser()
+parser.add_argument('--exp', type=str, help='Experiment in experiment_configs to run')
+args = parser.parse_args()
 
 #Parameters
 #-----------------------------------------------------------------------------------
-reader = open("C:\\Documents\\Alaa Lab\\CP-CLIP\\WebCP\\experiment_configs\\google-hybrid_medmnist_09-01-2023.json")
+reader = open(base_path + "\\experiment_configs\\"  + args.exp)
 config = json.load(reader)
 TEST_IMAGE_DIRECTORY = config["test_image_directory"]
 IMAGE_PLAUSIBILITIES = config["intermediate_data_directory"]
 RESULTS_DIRECTORY = config["results_data_directory"]
 CLASSIFICATION_CHECKPOINT = config["classification_checkpoint"]
-LABELS = MEDMNIST_CLASSES
+if config["dataset"] == 'MedMNIST':
+    LABELS = MEDMNIST_CLASSES
+elif config["dataset"] == 'FitzPatrick17k':
+    LABELS = FITZ17K_CLASSES
+else:
+    LABELS = None
 ALPHA = 0.05
 NUM_SAMPLES = 1000
 USE_SOFTMAX = True

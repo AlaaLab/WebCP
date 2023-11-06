@@ -1,11 +1,5 @@
 import sys
 import os
-base_path = 'C:\\Documents\\Alaa Lab\\CP-CLIP\\WebCP'
-sys.path.append(base_path + '\\cp')
-sys.path.append(base_path + '\\utils')
-from pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
-from fitz17k_classes import FITZ17K_CLASSES
-from medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
 
 from pathlib import Path
 import pandas as pd
@@ -15,16 +9,35 @@ from PIL import Image
 import torch
 import open_clip
 import json
+import argparse
+
+script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
+base_path = script_path.parent.absolute()
+sys.path.append(base_path + '\\cp')
+sys.path.append(base_path + '\\utils')
+from pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
+from fitz17k_classes import FITZ17K_CLASSES, FITZ17K_GENERIC_CLASSES
+from medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("CUDA ENABLED: {}".format(str(torch.cuda.is_available())))
 
+# Parse arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('--exp', type=str, help='Experiment in experiment_configs to run')
+args = parser.parse_args()
+
 # Parameters
-reader = open("C:\\Documents\\Alaa Lab\\CP-CLIP\\WebCP\\experiment_configs\\google-hybrid_medmnist_09-01-2023.json")
+reader = open(base_path + "\\experiment_configs\\"  + args.exp)
 config = json.load(reader)
 CONTEXT_DIRECTORY = config["context_directory"]
 IMAGE_PLAUSIBILITIES = config["intermediate_data_directory"]
-GENERIC_CLASSES = MEDMNIST_GENERIC_CLASSES
+if config["dataset"] == 'MedMNIST':
+    LABELS = MEDMNIST_GENERIC_CLASSES
+elif config["dataset"] == 'FitzPatrick17k':
+    LABELS = FITZ17K_GENERIC_CLASSES
+else:
+    LABELS = None
 
 # Prompt Engineering
 junk_labels = [
