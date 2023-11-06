@@ -7,17 +7,11 @@ We are currently in the process of migrating from the /main and /dutta branch in
 ## Setup
 
 ### Required Packages:
-1. transformers
-2. open_clip
-3. torch
-4. matplotlib
-5. pandas
-6. scipy
-7. numpy
-8. sklearn
-9. pillow
-
-NOTE: List may not be comprehensive, is work in progress.
+NOTE: The requirements may not be comprehensive, is work in progress.
+```
+cd WebCP
+pip install -r requirements.txt
+```
 
 ## Experiments
 
@@ -36,6 +30,7 @@ Modify experiment_configs/google-hybrid_medmnist_09-01-2023.json with correct di
 
 Then run these commands.
 ```
+cd ambiguous_cp
 python image_preprocessing.py --exp "google-hybrid_medmnist_09-01-2023.json"
 python plausibility_generation.py --exp "google-hybrid_medmnist_09-01-2023.json"
 python experiment.py --exp "google-hybrid_medmnist_09-01-2023.json"
@@ -55,6 +50,7 @@ Modify experiment_configs/google-hybrid_fitzpatrick17_09-01-2023.json with corre
 
 Then run these commands.
 ```
+cd ambiguous_cp
 python image_preprocessing.py --exp "google-hybrid_fitzpatrick17_09-01-2023.json"
 python plausibility_generation.py --exp "google-hybrid_fitzpatrick17_09-01-2023.json"
 python experiment.py --exp "google-hybrid_fitzpatrick17_09-01-2023.json"
@@ -63,4 +59,4 @@ python analysis.py --exp "google-hybrid_fitzpatrick17_09-01-2023.json" --out [DI
 
 ## Known Bugs
 
-1. May need to modify code for cpu if your machine doesn't support GPU acceleration (cuda)
+1. May need to modify code for cpu if your machine doesn't support GPU acceleration (cuda). In particular, may need to download specific torch version from website (i.e. 1.13.1+cu117)
