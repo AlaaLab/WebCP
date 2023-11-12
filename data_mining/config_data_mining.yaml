@@ -1,0 +1,11 @@
+results_store_dir: "/home/hwei/reesearch/datasets/web_scraping_1111_selenium_medmnist_lazy-load-fix_50size"
+class_list_csv: "/home/hwei/reesearch/zero-shot-conformal-prediction/medmnist/medmnist_classes.csv"
+
+num_threads: 1
+set_size: 75
+max_dim_size: 640
+
+class_id_start: null
+class_id_end: null
+class_id_exclude_list: []
+
