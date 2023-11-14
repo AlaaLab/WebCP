@@ -7,7 +7,7 @@ We are currently in the process of migrating from the /main and /dutta branch in
 ## Setup
 
 ### Required Packages:
-NOTE: The requirements may not be comprehensive, is work in progress.
+NOTE: Need to download different torch version from website instead of 1.13.1+cu117 based on if you have CUDA or if you have a different CUDA version
 ```
 cd WebCP
 pip install -r requirements.txt
@@ -59,7 +59,9 @@ python analysis.py --exp "google-hybrid_fitzpatrick17_09-01-2023.json" --out [DI
 
 ## Known Bugs
 
-1. May need to modify code for cpu if your machine doesn't support GPU acceleration (cuda). In particular, may need to download specific torch version from website (i.e. 1.13.1+cu117)
+1. May need to modify code for cpu if your machine doesn't support GPU acceleration via CUDA
 
 ## Credits
+
 1. The selenium-based data mining procedure in our library (all files in ./image_caption_scraper) were forked from the following repository and subsequently modified: https://github.com/alishibli97/image-caption-scraper. We thank the author for creating such a convenient open-source data mining library.
+2. All models including CLIP and BERT variants are sourced from HuggingFace model hub via their transformers library.
