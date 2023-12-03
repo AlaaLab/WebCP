@@ -53,7 +53,7 @@ Following this, additional analyses can be done using **ambiguous_cp/analysis.py
 ## Setup
 TODO: MENTION GOOGLE
 ### Required Packages:
-NOTE: The requirements may not be comprehensive, is work in progress.
+NOTE: Need to download different torch version from website instead of 1.13.1+cu117 based on if you have CUDA or if you have a different CUDA version
 ```
 cd WebCP
 pip install -r requirements.txt
@@ -105,12 +105,13 @@ python analysis.py --exp "google-hybrid_fitzpatrick17_09-01-2023.json" --out [DI
 
 ## Known Bugs
 
-1. May need to modify code for cpu if your machine doesn't support GPU acceleration (cuda). In particular, may need to download specific torch version from website (i.e. 1.13.1+cu117)
+1. May need to modify code for cpu if your machine doesn't support GPU acceleration via CUDA
 
 ## Acknowledgements 
 1. The selenium-based data mining procedure in our library (under ./image_caption_scraper) were forked from [alishibli97/iamge-caption-scraper](https://github.com/alishibli97/image-caption-scraper) and subsequently modified.
 2. Our implementations of ambiguous conformal prediction (under ./ambiguous_cp) were based upon the framework established in [Stutz et al., 2023](https://arxiv.org/pdf/2307.09302.pdf).
 3. Our implementations of the conformal prediction methods under ./ambiguous_cp were derived from Anastasios Angelopoulos's highly accessible literature review on conformal prediction ([Angelopoulos and Bates (2021)](https://arxiv.org/abs/2107.07511)), and their corresponding well-maintained repository ([aangelopoulos/conformal-prediction](https://github.com/aangelopoulos/conformal-prediction))
+4. All models including CLIP and BERT variants are sourced from HuggingFace model hub via their transformers library.
 
 ## Citation
 
