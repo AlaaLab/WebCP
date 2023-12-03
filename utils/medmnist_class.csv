@@ -1,0 +1,26 @@
+Class Index,Dataset Label,Class,Dataset,Generic Class
+0,adipose,adipose colon pathology imaging,pathmnist,pathology image
+1,background,background colon pathology imaging,pathmnist,pathology image
+2,debris,debris colon pathology imaging,pathmnist,pathology image
+3,lymphocytes,lymphocytes colon pathology imaging,pathmnist,pathology image
+4,mucus,mucus colon pathology imaging,pathmnist,pathology image
+5,smooth muscle,smooth muscle colon pathology imaging,pathmnist,pathology image
+6,normal colon mucosa,normal colon mucosa colon pathology imaging,pathmnist,pathology image
+7,cancer-associated stroma,cancer-associated stroma colon pathology imaging,pathmnist,pathology image
+8,colorectal adenocarcinoma epithelium,colorectal adenocarcinoma epithelium colon pathology imaging,pathmnist,pathology image
+9,basophil,basophil blood cell microscope imaging,bloodmnist,microscopy image
+10,eosinophil,eosinophil blood cell microscope imaging,bloodmnist,microscopy image
+11,erythroblast,erythroblast blood cell microscope imaging,bloodmnist,microscopy image
+12,"immature granulocytes (myelocytes, metamyelocytes and promyelocytes)","immature granulocytes (myelocytes, metamyelocytes and promyelocytes) blood cell microscope imaging",bloodmnist,microscopy image
+13,lymphocyte,lymphocyte blood cell microscope imaging,bloodmnist,microscopy image
+14,monocyte,monocyte blood cell microscope imaging,bloodmnist,microscopy image
+15,neutrophil,neutrophil blood cell microscope imaging,bloodmnist,microscopy image
+16,platelet,platelet blood cell microscope imaging,bloodmnist,microscopy image
+17,"Collecting Duct, Connecting Tubule","Collecting Duct, Connecting Tubule kidney cortex microscope imaging",tissuemnist,microscope imaging
+18,Distal Convoluted Tubule,Distal Convoluted Tubule kidney cortex microscope imaging,tissuemnist,microscope imaging
+19,Glomerular endothelial cells,Glomerular endothelial cells kidney cortex microscope imaging,tissuemnist,microscope imaging
+20,Interstitial endothelial cells,Interstitial endothelial cells kidney cortex microscope imaging,tissuemnist,microscope imaging
+21,Leukocytes,Leukocytes kidney cortex microscope imaging,tissuemnist,microscope imaging
+22,Podocytes,Podocytes kidney cortex microscope imaging,tissuemnist,microscope imaging
+23,Proximal Tubule Segments,Proximal Tubule Segments kidney cortex microscope imaging,tissuemnist,microscope imaging
+24,Thick Ascending Limb,Thick Ascending Limb kidney cortex microscope imaging,tissuemnist,microscope imaging

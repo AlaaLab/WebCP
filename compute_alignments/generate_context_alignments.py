@@ -1,16 +1,10 @@
 """
-Principal script for generating context alignments using retriever models. 
-
-Input: a YAML file containing:
-
-    
+Script to generate context alignment scores using textual retriever models, for non-selenium experiments.
 """
 import torch
 from transformers import AutoTokenizer, AutoModel
 from bs4 import BeautifulSoup
 from pathlib import Path
-import os
-import numpy as np
 import pandas as pd
 import pickle
 import nltk.data
@@ -79,7 +73,7 @@ def getText(content, bestTagDict, config):
     idx = len(textBeforeList) - 1
     while (len(textBeforeList) - 1 - idx) < config['sentence_window_length'] and idx >= 0 and tokenCnt <= config['token_window_length']:
         nextTokens = tokenizer([textBeforeList[idx]], padding=True, truncation=True,
-                              max_length=config['max_tokens'], return_tensors='pt')['input_ids']
+                               max_length=config['max_tokens'], return_tensors='pt')['input_ids']
         if (tokenCnt + nextTokens.size(dim=1) > tokenCnt):
             break
         shortenedBeforeList.append(textBeforeList[idx])
@@ -88,9 +82,9 @@ def getText(content, bestTagDict, config):
 
     tokenCnt = 0
     idx = 0
-    while idx < min(10, len(textAfterList)) and tokenCnt <= config['token_window_length']:
+    while idx < min(config['sentence_window_length'], len(textAfterList)) and tokenCnt <= config['token_window_length']:
         nextTokens = tokenizer([textAfterList[idx]], padding=True, truncation=True,
-                              max_length=config['max_tokens'], return_tensors='pt')['input_ids']
+                               max_length=config['max_tokens'], return_tensors='pt')['input_ids']
         if (tokenCnt + nextTokens.size(dim=1) > tokenCnt):
             break
         shortenedAfterList.append(textAfterList[idx])
@@ -125,7 +119,7 @@ def get_fileidx_list(dataset_subfolder):
     return res
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "config", help="the path to the yaml config file.", type=str)

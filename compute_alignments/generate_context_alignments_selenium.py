@@ -1,24 +1,23 @@
-#NOTE TO SELF: check natgeo - use the image alt tag, and sometimes it may contain embedded html
 import torch
 from transformers import AutoTokenizer, AutoModel
 from bs4 import BeautifulSoup
 from pathlib import Path
-import os
-import numpy as np
 import pandas as pd
-import pickle
 import nltk.data
 import yaml
 import argparse
 
+
 def getText(caption):
     nltk_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+
     def processText(text):
 
         # break into lines and remove leading and trailing space on each
         lines = (line.strip() for line in text.splitlines())
         # break multi-headlines into a line each
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        chunks = (phrase.strip()
+                  for line in lines for phrase in line.split("  "))
         # drop blank lines
         text = '\n'.join(chunk for chunk in chunks if chunk)
 
@@ -41,18 +40,21 @@ def getText(caption):
         captionText = processText(captionBS.get_text())
     else:
         captionText = processText(caption)
-    
+
     return [], captionText, []
+
 
 def compute_simscores(context_encoder, query_embedding_dict: dict, tokenized_context):
     scores = {}
     with torch.no_grad():
-        ctx_emb = context_encoder(**tokenized_context).last_hidden_state[:, 0, :]
+        ctx_emb = context_encoder(
+            **tokenized_context).last_hidden_state[:, 0, :]
     for cls, query_emb in query_embedding_dict.items():
         this_score_arr = query_emb @ ctx_emb.T
         scores[cls] = torch.max(this_score_arr).item()
 
     return scores
+
 
 def get_fileidx_list(dataset_subfolder):
     idxSet = set()
@@ -67,7 +69,7 @@ def get_fileidx_list(dataset_subfolder):
     return res
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "config", help="the path to the yaml config file.", type=str)
@@ -100,26 +102,33 @@ if __name__ == "main":
         row = class_df.iloc[i, :]
         class_dict[row["Class Index"]] = row["Class"]
 
-    query_encoders = {cls_name: tokenizer(cls_name, return_tensors='pt') for cls_name in class_dict.values()}
+    query_encoders = {cls_name: tokenizer(
+        cls_name, return_tensors='pt') for cls_name in class_dict.values()}
     for query_encoding in query_encoders.values():
         for arg in ['input_ids', 'token_type_ids', 'attention_mask']:
-            assert query_encoding[arg].size(dim=1) <= config['max_tokens'], f"{query_encoding[arg].size(dim=1)}"
+            assert query_encoding[arg].size(
+                dim=1) <= config['max_tokens'], f"{query_encoding[arg].size(dim=1)}"
     with torch.no_grad():
-        query_embeddings = {cls_name: query_encoder(**query_encoding).last_hidden_state[:, 0, :] for cls_name, query_encoding in query_encoders.items()}
+        query_embeddings = {cls_name: query_encoder(
+            **query_encoding).last_hidden_state[:, 0, :] for cls_name, query_encoding in query_encoders.items()}
 
     for class_idx, class_name in class_dict.items():
         print("CLASS " + str(class_idx))
         this_result_store = (config['results_store_dir'] / f"{class_idx}")
         this_result_store.mkdir(exist_ok=True)
 
-        this_dataset_store = (config['calibration_dataset_dir'] / f"{class_idx}")
+        this_dataset_store = (
+            config['calibration_dataset_dir'] / f"{class_idx}")
         assert this_dataset_store.exists()
 
-        result_dict = {cls_name: [] for cls_name in ['Index'] + list(class_dict.values())}
-        text_dict = {field: [] for field in ['Index', 'text_before', 'caption', 'text_after']}
+        result_dict = {cls_name: []
+                       for cls_name in ['Index'] + list(class_dict.values())}
+        text_dict = {field: []
+                     for field in ['Index', 'text_before', 'caption', 'text_after']}
         for file_idx in get_fileidx_list(this_dataset_store):
             print(file_idx)
-            caption = open(this_dataset_store / f"{class_name}_{file_idx}.caption", "r").read()
+            caption = open(this_dataset_store /
+                           f"{class_name}_{file_idx}.caption", "r").read()
 
             textBeforeList, captionList, textAfterList = getText(caption)
             text_dict['Index'].append(file_idx)
@@ -127,17 +136,18 @@ if __name__ == "main":
             text_dict['text_after'].append(str(textAfterList))
             text_dict['caption'].append(str(captionList))
 
-            tokenizedContext = tokenizer(textBeforeList + captionList + textAfterList, padding=True, truncation=True, max_length=config['max_tokens'], return_tensors='pt')
+            tokenizedContext = tokenizer(textBeforeList + captionList + textAfterList, padding=True,
+                                         truncation=True, max_length=config['max_tokens'], return_tensors='pt')
 
             for token in tokenizedContext.values():
                 assert token.size(dim=1) <= config['max_tokens']
 
-            scoreDict = compute_simscores(context_encoder, query_embeddings, tokenizedContext)
+            scoreDict = compute_simscores(
+                context_encoder, query_embeddings, tokenizedContext)
             result_dict['Index'].append(file_idx)
             for cls_name in class_dict.values():
                 result_dict[cls_name].append(scoreDict[cls_name])
 
-        
         this_df = pd.DataFrame(result_dict)
         this_df.to_csv(this_result_store / f"scores.csv")
 

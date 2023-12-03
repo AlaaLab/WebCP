@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 from loguru import logger
 from datetime import datetime
 import re
@@ -15,39 +14,42 @@ from .helper import *
 import uuid
 import json
 from .expansion import *
-import traceback
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
+
 # print(uuid.uuid4())
 def get_public_ip_address():
-        """Read the public IP address of the host"""
-        #content = requests.get('https://www.whatismyip.org/my-ip-address').content
-        #soup = BeautifulSoup(content,'html.parser')
-        #print(content)
-        #public_ip = soup.find("a",{"href":"https://whatismyip.org/en/my-ip-address"}).string
-        #print(public_ip)
-        public_ip = requests.get('https://api.ipify.org').content.decode('utf8')
-        print(public_ip)
-        return public_ip 
+    """Read the public IP address of the host"""
+    response = requests.get('https://api.ipify.org')
+    return response.text
+
+
 class Image_Caption_Scraper():
-    public_ip = get_public_ip_address() 
+    public_ip = get_public_ip_address()
     def __init__(self,engine="all",num_images=100,query="dog chases cat",out_dir="images",headless=True,driver="chromedriver",expand=False,k=3):
         """Initialization is only starting the web driver and getting the public IP address"""
         logger.info("Initializing scraper")
         
+        self.public_ip = self.get_public_ip_address()
         self.google_start_index = 0
 
         self.cfg = parse_args(engine,num_images,query,out_dir,headless,driver,expand,k)
         self.start_web_driver()
+    
+    def close(self):
+        self.wd.close()
 
     def start_web_driver(self):
         """Create the webdriver and point it to the specific search engine"""
         logger.info("Starting the engine")
-        service = Service()
         chrome_options = Options()
+
         if self.cfg.headless:
-            chrome_options.add_argument("--headless=new")
-        self.wd = webdriver.Chrome(service=service, options=chrome_options)
-    def close(self):
-        self.wd.close()
+            chrome_options.add_argument("--headless")
+
+        self.wd = webdriver.Chrome(options=chrome_options) # service=Service(executable_path=self.cfg.driver)
+
+
     def scrape(self,save_images=True):
         """Main function to scrape"""
         img_data = {}
@@ -119,6 +121,16 @@ class Image_Caption_Scraper():
         self.set_target_url("google")
 
         self.wd.get(self.target_url)
+
+        time.sleep(2)
+        try:
+            button = self.wd.find_element(By.XPATH, "//button[contains(@class, 'VfPpkd-LgbsSe') and @jsname='b3VHJd']")
+            button.click()
+            time.sleep(2)
+        except (NoSuchElementException, ElementClickInterceptedException):
+            # Handle the exception or just pass
+            pass
+
         img_data = {}
 
         # start = 0
@@ -154,17 +166,16 @@ class Image_Caption_Scraper():
                         now = now.strftime("%m-%d-%Y %H:%M:%S %z %Z")
 
                         name = uuid.uuid4() # len(img_data)
-                        img_data[f'{i}']={
+                        img_data[f'{name}.jpg']={
                             'query':self.cfg.query,
                             'url':url.get_attribute('src'),
                             'caption':caption,
                             'datetime': now,
                             'source': 'google',
-                            'public_ip': Image_Caption_Scraper.public_ip
+                            'public_ip': self.public_ip
                         }
                         logger.info(f"Finished {len(img_data)}/{self.cfg.num_images} images for Google.")
                 except:
-                    logger.debug(traceback.format_exc())
                     logger.debug("Couldn't load image and caption for Google")
                 
                 if(len(img_data)>self.cfg.num_images-1): 
@@ -211,15 +222,15 @@ class Image_Caption_Scraper():
                     self.wd.execute_script("arguments[0].click();", content)
                     time.sleep(0.5)
                 except: # Exception as e:
-                    new_html_list = self.wd.find_element(By.ID, "sres")
-                    new_items = new_html_list.find_elements(By.TAG_NAME, "li")
+                    new_html_list = self.wd.find_element(By.ID,"sres")
+                    new_items = new_html_list.find_elements(By.TAG_NAME,"li")
                     item = new_items[i]
                     self.wd.execute_script("arguments[0].click();", item)
                 i+=1
                 # caption = self.wd.find_element_by_class_name('title').text
 
                 try:
-                    url = content.find_element(By.TAG_NAME, 'img')
+                    url = content.find_element(By.TAG_NAME,'img')
 
                     if url.get_attribute('src') and not url.get_attribute('src').endswith('gif') and url.get_attribute('src') not in img_data:
 
@@ -227,13 +238,13 @@ class Image_Caption_Scraper():
                         now = now.strftime("%m-%d-%Y %H:%M:%S %z %Z")
 
                         name = uuid.uuid4() # len(img_data)
-                        img_data[f'{i}']={
+                        img_data[f'{name}.jpg']={
                             'query':self.cfg.query,
                             'url':url.get_attribute('src'),
                             'caption':self.cfg.query, # caption
                             'datetime': now,
                             'source': 'google',
-                            'public_ip': Image_Caption_Scraper.public_ip
+                            'public_ip': self.public_ip
                         }
                         logger.info(f"Finished {len(img_data)}/{self.cfg.num_images} images for Yahoo.")
                 
@@ -287,13 +298,13 @@ class Image_Caption_Scraper():
                         now = now.strftime("%m-%d-%Y %H:%M:%S %z %Z")
 
                         name = uuid.uuid4() # len(img_data)
-                        img_data[f'{i}']={
+                        img_data[f'{name}.jpg']={
                             'query':self.cfg.query,
                             'url':url,
                             'caption':caption,
                             'datetime': now,
                             'source': 'flickr',
-                            'public_ip': Image_Caption_Scraper.public_ip
+                            'public_ip': self.public_ip
                         }
 
                         logger.info(f"Finished {len(img_data)}/{self.cfg.num_images} images for Flickr.")
@@ -318,38 +329,38 @@ class Image_Caption_Scraper():
         result_items = img_data.copy()
 
         for i,(key,val) in enumerate(img_data.items()):
-            #try:
-            url = val['url']
-            caption = val['caption']
+            try:
+                url = val['url']
+                caption = val['caption']
 
-            if(url.startswith('http')):
-                read_http(url, caption, self.cfg.engine,query,key)
+                if(url.startswith('http')):
+                    read_http(url,self.cfg.engine,query,caption,i)
 
-            elif(url.startswith('data')):
-                read_base64(url, caption, self.cfg.engine,query,key)
+                elif(url.startswith('data')):
+                    read_base64(url,self.cfg.engine,query,caption,i)
 
-            else:
+                else:
+                    del result_items[key]
+                    logger.debug(f"Couldn't save image {i}: not http nor base64 encoded.")
+            except:
                 del result_items[key]
-                logger.debug(f"Couldn't save image {key}: not http nor base64 encoded.")
-            #except:
-            #    del result_items[key]
-            #    logger.debug(f"Couldn't save image {key}")
+                logger.debug(f"Couldn't save image {i}")
 
-        file_path = f'{self.cfg.engine}_{query}.json'
+        file_path = f'{self.cfg.engine}/{query}/{query}.json'
         with open(file_path, 'w+') as fp:
             json.dump(result_items, fp)
         logger.info(f"Saved urls file at: {os.path.join(os.getcwd(),file_path)}")
 
-    # def save_images_data(self,img_data):
-    #     """Save only the meta data without the images"""
-    #     query = '_'.join(self.cfg.query.lower().split())
-    #     out_dir = self.cfg.out_dir
-    #     Path(out_dir).mkdir(parents=True, exist_ok=True)
-    #     os.chdir(out_dir)
+    def save_images_data(self,img_data):
+        """Save only the meta data without the images"""
+        query = '_'.join(self.cfg.query.lower().split())
+        out_dir = self.cfg.out_dir
+        Path(out_dir).mkdir(parents=True, exist_ok=True)
+        os.chdir(out_dir)
 
-    #     file_path = f'{self.cfg.engine}/{query}'
-    #     Path(file_path).mkdir(parents=True, exist_ok=True)
-    #     file_path += f'/{query}.json'
-    #     with open(file_path, 'w+') as fp:
-    #         json.dump(img_data, fp)
-    #     logger.info(f"Saved json data file at: {os.path.join(os.getcwd(),file_path)}")
+        file_path = f'{self.cfg.engine}/{query}'
+        Path(file_path).mkdir(parents=True, exist_ok=True)
+        file_path += f'/{query}.json'
+        with open(file_path, 'w+') as fp:
+            json.dump(img_data, fp)
+        logger.info(f"Saved json data file at: {os.path.join(os.getcwd(),file_path)}")

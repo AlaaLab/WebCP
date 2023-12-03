@@ -1,0 +1,14 @@
+calib_image_dir:
+test_image_dir: 
+intermediate_data_dir:
+results_store_dir:
+classification_checkpoint:
+class_list_csv: 
+context_dir:
+chart_output_dir: 
+junk_labels: 
+  - an image
+  - an image with a lot of text
+  - an image of a diagram
+  - an image of a graph
+  - an image of a drawing
