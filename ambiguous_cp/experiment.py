@@ -69,17 +69,17 @@ if __name__ == "__main__":
         config = yaml.safe_load(yaml_file)
 
     for k, v in config.items():
-        if (k in ['calib_image_dir', 'test_image_dir', 'intermediate_data_dir', 'results_store_dir', 'classification_checkpoint', 'context_dir', 'char_output_dir']):
+        if (k[-4:] == '_dir'):
             config[k] = Path(v)
 
     config['results_store_dir'].mkdir(exist_ok=False)
 
     # Parameters
     TEST_IMAGE_DIRECTORY = config["test_image_dir"]
-    IMAGE_PLAUSIBILITIES = config["intermediate_data_dir"]
+    IMAGE_PLAUSIBILITIES = config["plausibility_store_dir"]
     RESULTS_DIRECTORY = config["results_store_dir"]
     CLASSIFICATION_CHECKPOINT = config["classification_checkpoint"]
-    CALIB_IMAGE_DIRECTORY = config['calibration_image_dir']
+    CALIB_IMAGE_DIRECTORY = config['preprocess_image_store_dir']
 
     class_dict = {}
     class_df = pd.read_csv(config['class_list_csv'])

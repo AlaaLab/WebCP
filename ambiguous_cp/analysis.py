@@ -45,7 +45,7 @@ if __name__ == "__main__":
         config = yaml.safe_load(yaml_file)
 
     for k, v in config.items():
-        if (k in ['calib_image_dir', 'test_image_dir', 'intermediate_data_dir', 'results_store_dir', 'classification_checkpoint', 'context_dir', 'char_output_dir']):
+        if (k[-4:] == '_dir'):
             config[k] = Path(v)
 
     # Parameters

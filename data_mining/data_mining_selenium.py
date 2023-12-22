@@ -55,7 +55,7 @@ def main():
         config = yaml.safe_load(yaml_file)
 
     for k, v in config.items():
-        if (k in ['results_store_dir', 'calibration_dataset_dir']):
+        if (k[-4:] == '_dir'):
             config[k] = Path(v)
 
     config['results_store_dir'].mkdir(exist_ok=True)

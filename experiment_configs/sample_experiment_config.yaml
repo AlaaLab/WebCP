@@ -24,7 +24,7 @@ query_encoder: # which model to use for encoding the class name?
   path: *tokenizer_path # leave like this if the path is the same as config['tokenizer']['path']; otherwise, specify the HuggingFace path if different.
   kwargs: {} # other args
 
-context encoder: # which model to use for encoding the metadata?
+context_encoder: # which model to use for encoding the metadata?
   path: *tokenizer_path # leave like this if the path is the same as config['tokenizer']['path']; otherwise, specify the HuggingFace path if different.
   kwargs: {} # other args
 
@@ -34,5 +34,5 @@ plausibility_store_dir: # indicates where to store final plausibilities.
 test_image_dir: # for analysis.py and experiment.py, where the directory of test images is. 
 plausibility_checkpoint: "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" # specify the huggingface model for computing content alignments. 
 classification_checkpoint: "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224" # specify the huggingface model for running predictions (the actual task).
-
-#TODO: remap all configs for ambiguous_cp.
+results_store_dir: #indicates where to store results of experiment.py
+chart_output_dir: #indicates where to store resulting charts of analysis.py

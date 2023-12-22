@@ -79,8 +79,8 @@ if __name__ == "__main__":
     with open(args["config"], "r") as yaml_file:
         config = yaml.safe_load(yaml_file)
 
-    for k, v in enumerate(config):
-        if (k in ['results_store_dir, calibration_dataset_dir']):
+    for k, v in config.items():
+        if (k[-4:] == '_dir'):
             config[k] = Path(v)
 
     config['results_store_dir'].mkdir(exist_ok=False)

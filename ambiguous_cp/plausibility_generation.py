@@ -45,12 +45,13 @@ if __name__ == "__main__":
         config = yaml.safe_load(yaml_file)
 
     for k, v in config.items():
-        if (k in ['calib_image_dir', 'test_image_dir', 'intermediate_data_dir', 'results_store_dir', 'classification_checkpoint', 'context_dir', 'char_output_dir']):
+        if (k[-4:] == '_dir'):
             config[k] = Path(v)
 
-    CONTEXT_DIRECTORY = config["context_dir"]
-    IMAGE_PLAUSIBILITIES = config["intermediate_data_dir"]
-
+    CONTEXT_DIRECTORY = config["context_store_dir"]
+    PREPROCESS_IMAGE_DIR = config['preprocess_image_store_dir']
+    IMAGE_PLAUSIBILITIES = config["plausibility_store_dir"]
+    IMAGE_PLAUSIBILITIES.mkdir(exists_ok=False)
     generic_class_dict = {}
     class_df = pd.read_csv(config['class_list_csv'])
 
@@ -89,7 +90,7 @@ if __name__ == "__main__":
             id, context_vals = context_entry[1], context_entry[2:]
             context_probs = sp.softmax(context_vals)
             image_logit = torch.load(
-                IMAGE_PLAUSIBILITIES / str(label) / (str(int(id))+"_encoding"))
+                PREPROCESS_IMAGE_DIR / str(label) / (str(int(id))+"_encoding"))
             # Type Alignment
             junk_probs = openclip_process(image_logit, junk_logits, 1000.0)
             context_probs = junk_probs[0]*context_probs
