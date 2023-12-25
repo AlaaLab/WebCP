@@ -11,7 +11,7 @@ class_id_end: null # similar purpose as class_id_start, but now to specify which
 class_id_exclude_list: [] # similar purpose as class_id_start and class_id_end, but used to specify which class IDs to skip. leave empty if not used. 
 
 # context generation (step 2) 
-context_store_dir: # directory to store results of context alignment generation.
+context_alignment_store_dir: # directory to store results of context alignment generation.
 max_tokens: 512 # maximum number of tokens compatible with query or context encoders, see below.
 token_window_length: 256 # specifies length of window. the minimum is taken between tokens and sentences.
 sentence_window_length: 10 # specifies length of window. the minimum is taken between tokens and sentences. 

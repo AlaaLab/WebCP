@@ -11,7 +11,7 @@ import traceback
 
 
 def process_image(ls, config, headers):
-    file_dir, url = ls
+    file_dir, image_url_dir, url = ls
     # try:
     response = requests.get(url, headers=headers, timeout=(5, 5))
     img = Image.open(BytesIO(response.content))
@@ -26,6 +26,10 @@ def process_image(ls, config, headers):
 
     img = img.resize((new_width, new_height))
     img.save(file_dir, "jpeg", quality=95)
+
+    with open(image_url_dir, "w") as image_url_file:
+        image_url_file.write(str(url))
+
     # except Exception as e:
     # logger.critical(f"Error when processing {file_dir}, url {url}: {traceback.format_exc()}; Request Content is {response.content}")
 

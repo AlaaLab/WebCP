@@ -151,7 +151,7 @@ def main():
                         img_url_list.extend(this_img_list)
 
                     img_arg_list = [
-                        [str(this_res_dir / f"{baseIdx + idx}.image"), img_url] for idx, img_url in enumerate(img_url_list)]
+                        [str(this_res_dir / f"{baseIdx + idx}.image"), str(this_res_dir / f"{baseIdx + idx}.image_url"), img_url] for idx, img_url in enumerate(img_url_list)]
                     context_arg_list = [[str(this_res_dir / f"{baseIdx + idx}.context"), str(this_res_dir / f"{class_name}_{baseIdx + idx}.url"),
                                          context_url, img_url] for (idx, (context_url, img_url)) in enumerate(zip(context_url_list, img_url_list))]
 

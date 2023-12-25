@@ -83,7 +83,7 @@ if __name__ == "__main__":
         if (k[-4:] == '_dir'):
             config[k] = Path(v)
 
-    config['results_store_dir'].mkdir(exist_ok=False)
+    config['context_alignment_store_dir'].mkdir(exist_ok=False)
 
     class_df = pd.read_csv(config['class_list_csv'])
 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     for class_idx, class_name in class_dict.items():
         print("CLASS " + str(class_idx))
-        this_result_store = (config['results_store_dir'] / f"{class_idx}")
+        this_result_store = (config['context_alignment_store_dir'] / f"{class_idx}")
         this_result_store.mkdir(exist_ok=True)
 
         this_dataset_store = (
