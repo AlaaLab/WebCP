@@ -76,7 +76,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     config = {}
-    with open(args["config"], "r") as yaml_file:
+    with open(args.config, "r") as yaml_file:
         config = yaml.safe_load(yaml_file)
 
     for k, v in config.items():

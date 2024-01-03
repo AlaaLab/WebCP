@@ -13,7 +13,7 @@ from multiprocessing import Pool
 def selenium_process(ls):
     class_id, class_name, config = ls
 
-    this_res_dir = config['results_store_dir'] / f"{class_id}"
+    this_res_dir = config['scraping_store_dir'] / f"{class_id}"
     this_res_dir.mkdir(exist_ok=True)
     logging.basicConfig(filename=this_res_dir/f"events.log",
                         format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', filemode="w")
@@ -58,9 +58,9 @@ def main():
         if (k[-4:] == '_dir'):
             config[k] = Path(v)
 
-    config['results_store_dir'].mkdir(exist_ok=True)
+    config['scraping_store_dir'].mkdir(exist_ok=True)
 
-    logging.basicConfig(filename=config['results_store_dir']/f"events.log",
+    logging.basicConfig(filename=config['scraping_store_dir']/f"events.log",
                         format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', filemode="w")
     logger = logging.getLogger("my-logger")
     logger.setLevel(logging.INFO)

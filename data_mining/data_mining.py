@@ -22,14 +22,12 @@ def main():
     args = parser.parse_args()
 
     config = {}
-    with open(args["config"], "r") as yaml_file:
+    with open(args.config, "r") as yaml_file:
         config = yaml.safe_load(yaml_file)
 
     for k, v in config.items():
         if (k[-4:] == '_dir'):
             config[k] = Path(v)
-
-    config['results_store_dir'].mkdir(exist_ok=False)
 
     class_df = pd.read_csv(config['class_list_csv'])
 
@@ -42,11 +40,11 @@ def main():
     size = comm.Get_size()
 
     if rank == 0:
-        config['results_store_dir'].mkdir(exist_ok=False)
+        config['scraping_store_dir'].mkdir(exist_ok=False)
     else:
         sleep(10)
 
-    logging.basicConfig(filename=config['results_store_dir']/f"events_{rank}.log",
+    logging.basicConfig(filename=config['scraping_store_dir']/f"events_{rank}.log",
                         format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', filemode="w")
     logger = logging.getLogger("my-logger")
     logger.setLevel(logging.INFO)
@@ -122,7 +120,7 @@ def main():
                 retry = False
 
                 if baseIdx == 0:
-                    this_res_dir = config['results_store_dir'] / f"{class_id}"
+                    this_res_dir = config['scraping_store_dir'] / f"{class_id}"
                     this_res_dir.mkdir(exist_ok=True)
                     logger.info(
                         f"PROCESS {rank}: Class: {class_id}, {class_name}")
@@ -141,7 +139,7 @@ def main():
                             # logger.info(f"PROCESS {rank} class {class_id} class name {class_name} page {currPage} image list: {img_url_list} context_url_list: {context_url_list}")
                             logger.info(
                                 f"PROCESS {rank} class {class_id} class name {class_name} page {currPage} image list: {img_url_list[0:5]} context_url_list: {context_url_list[0:5]}")
-                    if (len(context_url_list) == 0 and sum(1 for x in this_res_dir.glob('*') if x.is_file()) < config['set_size'] * 3):
+                    if (len(context_url_list) == 0 and sum(1 for x in this_res_dir.glob('*') if x.is_file()) < config['set_size'] * 4):
                         this_context_list, this_img_list = makeQuery(
                             currPage, class_name, cse)
                         assert len(this_context_list) == 10 and len(
@@ -151,8 +149,8 @@ def main():
                         img_url_list.extend(this_img_list)
 
                     img_arg_list = [
-                        [str(this_res_dir / f"{baseIdx + idx}.image"), str(this_res_dir / f"{baseIdx + idx}.image_url"), img_url] for idx, img_url in enumerate(img_url_list)]
-                    context_arg_list = [[str(this_res_dir / f"{baseIdx + idx}.context"), str(this_res_dir / f"{class_name}_{baseIdx + idx}.url"),
+                        [str(this_res_dir / f"{baseIdx + idx}.jpeg"), str(this_res_dir / f"{baseIdx + idx}.image-url"), img_url] for idx, img_url in enumerate(img_url_list)]
+                    context_arg_list = [[str(this_res_dir / f"{baseIdx + idx}.context"), str(this_res_dir / f"{baseIdx + idx}.url"),
                                          context_url, img_url] for (idx, (context_url, img_url)) in enumerate(zip(context_url_list, img_url_list))]
 
                     baseIdx += len(img_url_list)
@@ -163,7 +161,7 @@ def main():
                     context_url_list.clear()
                     img_url_list.clear()
 
-                    if (sum(1 for x in this_res_dir.glob('*') if x.is_file()) >= config['set_size'] * 3):
+                    if (sum(1 for x in this_res_dir.glob('*') if x.is_file()) >= config['set_size'] * (4 if config['use_webpage_context'] else 2)):
                         goodFinish = True
                     else:
                         retry = True
@@ -191,13 +189,13 @@ def main():
                         f"PROCESS {rank}" + str(traceback.format_exc()))
                 finally:
                     if goodFinish:
-                        for filePath in this_res_dir.iterdir():
-                            first = str(filePath).rindex("_")+1
-                            last = str(filePath).rindex(".")
-                            fileIdx = str(str(filePath)[first:last])
-                            if not Path(this_res_dir / f"{class_name}_{fileIdx}.image").exists() or not Path(this_res_dir / f"{class_name}_{fileIdx}.context").exists() or not Path(this_res_dir / f"{class_name}_{fileIdx}.url").exists():
-                                logger.critical(
-                                    f"PROCESS {rank} class {class_id} class name {class_name}: fileindex {fileIdx} IS NOT A TRIPLE")
+                        # for filePath in this_res_dir.iterdir():
+                        #     first = str(filePath).rindex("_")+1
+                        #     last = str(filePath).rindex(".")
+                        #     fileIdx = str(str(filePath)[first:last])
+                        #     if not Path(this_res_dir / f"{fileIdx}.jpeg").exists() or not Path(this_res_dir / f"{fileIdx}.context").exists() or not Path(this_res_dir / f"{fileIdx}.url").exists() or not Path(this_res_dir / f"{fileIdx}.image-url").exists():
+                        #         logger.critical(
+                        #             f"PROCESS {rank} class {class_id} class name {class_name}: fileindex {fileIdx} IS NOT A QUAD")
                         break
                     if not retry:
                         dir_contents = list(this_res_dir.iterdir())

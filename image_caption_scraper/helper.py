@@ -15,13 +15,17 @@ def read_http(url, engine, query, caption, i):
         img = img.convert('RGB')
     except:
         pass
-    image_file_path = os.path.join(f'{i}.image')
+    image_file_path = os.path.join(f'{i}.jpeg')
     with open(image_file_path, 'wb') as f:
         img.save(f, "JPEG", quality=95)
     
     caption_file_path = os.path.join(f'{i}.caption')
     with open(caption_file_path, "w") as write_file:
         write_file.write(caption)
+
+    image_url_file_path = os.path.join(f'{i}.image-url')
+    with open(image_url_file_path, "w") as image_url_file:
+        image_url_file.write(url)
  
     logger.info(f"Saved image {i}")
 def read_base64(url, engine, query, caption, i):
@@ -29,14 +33,18 @@ def read_base64(url, engine, query, caption, i):
     base64_img = url.split(',')[1]
     img = Image.open(io.BytesIO(base64.b64decode(base64_img)))
     img = img.convert("RGB")
-    image_file_path = os.path.join(f'{i}.image')
+    image_file_path = os.path.join(f'{i}.jpeg')
     with open(image_file_path, "wb") as f:
         img.save(f, "JPEG", quality=95)
    
-    caption_file_path = os.path.join(f'{filename}.caption') 
+    caption_file_path = os.path.join(f'{i}.caption') 
     with open(caption_file_path, "w") as write_file:
         write_file.write(caption)
  
+    image_url_file_path = os.path.join(f'{i}.image-url')
+    with open(image_url_file_path, "w") as image_url_file:
+        image_url_file.write(url)
+
     logger.info(f"Saved image {i}")
 
 class parse_args():

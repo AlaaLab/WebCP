@@ -3,11 +3,12 @@ import yaml
 import pandas as pd
 import numpy as np 
 from pathlib import Path
+import logging
 from google.cloud import vision
 import pickle
-
-
-def annotate(path: str) -> vision.WebDetection:
+import concurrent.futures
+import traceback
+def annotate(args:tuple) -> vision.WebDetection:
     """Returns web annotations given the path to an image.
 
     Args:
@@ -17,27 +18,32 @@ def annotate(path: str) -> vision.WebDetection:
         An WebDetection object with relevant information of the
         image from the internet (i.e., the annotations).
     """
-    client = vision.ImageAnnotatorClient()
+    try: 
+        this_class_store, file_idx, path, logger = args
 
-    if path.startswith("http") or path.startswith("gs:"):
-        image = vision.Image()
-        image.source.image_uri = path
+        client = vision.ImageAnnotatorClient()
 
-    else:
-        with open(path, "rb") as image_file:
-            content = image_file.read()
+        if path.startswith("http") or path.startswith("gs:"):
+            image = vision.Image()
+            image.source.image_uri = path
 
-        image = vision.Image(content=content)
+        else:
+            with open(path, "rb") as image_file:
+                content = image_file.read()
 
-    web_detection = client.web_detection(image=image).web_detection
+            image = vision.Image(content=content)
 
-    return web_detection
+        web_detection = client.web_detection(image=image).web_detection
 
+        with open(this_class_store / f"{file_idx}.web_detection", "wb") as this_res_file:
+            pickle.dump(web_detection, this_res_file)
+    except Exception as e:
+        logger.error(traceback.format_exc())
 
 def get_fileidx_list(dataset_subfolder):
     idxSet = set()
     for filePath in dataset_subfolder.iterdir():
-        first = str(filePath).rindex("_")+1
+        first = str(filePath).rindex("/")+1
         last = str(filePath).rindex(".")
         fileIdx = int(str(str(filePath)[first:last]))
         idxSet.add(fileIdx)
@@ -55,7 +61,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     config = {}
-    with open(args["config"], "r") as yaml_file:
+    with open(args.config, "r") as yaml_file:
         config = yaml.safe_load(yaml_file)
 
     for k, v in config.items():
@@ -66,27 +72,39 @@ if __name__ == "__main__":
 
     class_df = pd.read_csv(config['class_list_csv'])
 
+
+    logging.basicConfig(filename=config['web_detection_store_dir']/f"events.log",
+                        format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', filemode="w")
+    logger = logging.getLogger("my-logger")
+    logger.setLevel(logging.INFO)
+
+    # set up logging to console
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    logger.addHandler(console)
+
+    logger.info("start process")
     class_dict = {}
     for i in range(len(class_df)):
         row = class_df.iloc[i, :]
         class_dict[row["Class Index"]] = row["Class"]
 
+    request_list = []
     for class_idx, class_name in class_dict.items():
-        print("CLASS " + str(class_idx))
+        # print("CLASS " + str(class_idx))
         this_class_store = (config['web_detection_store_dir'] / f"{class_idx}")
         this_class_store.mkdir(exist_ok=True)
 
         this_dataset_store = (
-            config['calibration_dataset_dir'] / f"{class_idx}")
+            config['scraping_store_dir'] / f"{class_idx}")
         assert this_dataset_store.exists()
 
         for file_idx in get_fileidx_list(this_dataset_store):
-            print(file_idx)
+            # print(file_idx)
             url = open(this_dataset_store /
-                           f"{class_name}_{file_idx}.image_url", "r").read()
+                           f"{file_idx}.image-url", "r").read()
 
-            res = annotate(url)
+            request_list.append((this_class_store, file_idx, url, logger))
 
-
-            with open(this_class_store / f"{file_idx}.web_detection", "w") as this_res_file:
-                pickle.dump(res, this_res_file)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=config['num_threads']) as executor:
+        executor.map(annotate, request_list)

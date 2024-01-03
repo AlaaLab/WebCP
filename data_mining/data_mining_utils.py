@@ -3,7 +3,7 @@ import requests
 from io import BytesIO
 from difflib import SequenceMatcher
 from bs4 import BeautifulSoup
-from urllib import urlparse
+from urllib.parse import urlparse
 import os
 import pickle
 from pathlib import Path
@@ -13,7 +13,7 @@ import traceback
 def process_image(ls, config, headers):
     file_dir, image_url_dir, url = ls
     # try:
-    response = requests.get(url, headers=headers, timeout=(5, 5))
+    response = requests.get(url, headers=headers, timeout=(5, 5), stream=True)
     img = Image.open(BytesIO(response.content))
 
     old_width, old_height = img.size
@@ -121,11 +121,14 @@ def process_webpage(ls, headers, logger):
 def process_both(imgLs, webLs, config, headers, logger):
     try:
         process_image(imgLs, config, headers)
-        process_webpage(webLs, logger)
+        if config['use_webpage_context']:
+            process_webpage(webLs, headers, logger)
     except Exception as e:
         Path(imgLs[0]).unlink(missing_ok=True)
-        Path(webLs[0]).unlink(missing_ok=True)
-        Path(webLs[1]).unlink(missing_ok=True)
+        Path(imgLs[1]).unlink(missing_ok=True)
+        if config['use_webpage_context']:
+            Path(webLs[0]).unlink(missing_ok=True)
+            Path(webLs[1]).unlink(missing_ok=True)
         logger.critical(
             f"Error when processing {imgLs}, web {webLs}: {traceback.format_exc()}")
 
