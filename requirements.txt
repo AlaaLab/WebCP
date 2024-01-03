@@ -8,7 +8,6 @@ numpy==1.23.5
 pandas==1.5.3
 Pillow==10.2.0
 protobuf==4.25.1
-PyYAML==6.0
 PyYAML==6.0.1
 Requests==2.31.0
 scikit_learn==1.2.2
