@@ -2,7 +2,7 @@ setuptools==69.0.3
 beautifulsoup4==4.11.1
 google_api_python_client==2.48.0
 loguru==0.7.2
-matplotlib==3.5.1
+matplotlib==3.8.2
 mpi4py==3.1.4
 nltk==3.8.1
 numpy==1.26.3
