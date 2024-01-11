@@ -14,39 +14,64 @@ import argparse
 
 script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
 base_path = script_path.parent.absolute()
-sys.path.append(base_path + '\\cp')
-sys.path.append(base_path + '\\utils')
-from pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
-from fitz17k_classes import FITZ17K_CLASSES, FITZ17K_GENERIC_CLASSES
-from medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
-from conformal_prediction_methods import *
-from metrics import *
+sys.path.append(base_path / 'cp')
+sys.path.append(base_path / 'utils')
+from utils.pets_classes import PETS_CLASSES
+from utils.fitz17k_classes import FITZ17K_CLASSES
+from utils.medmnist_classes import MEDMNIST_CLASSES
+from cp.conformal_prediction_methods import *
+from cp.metrics import *
 
 #Parse Arguments
 #-----------------------------------------------------------------------------------
-parser = argparse.ArgumentParser()
+'''parser = argparse.ArgumentParser()
 parser.add_argument('--exp', type=str, help='Experiment in experiment_configs to run')
-args = parser.parse_args()
+args = parser.parse_args()'''
 
 #Parameters
 #-----------------------------------------------------------------------------------
-reader = open(base_path + "\\experiment_configs\\"  + args.exp)
+'''reader = open(base_path + "\\experiment_configs\\"  + args.exp)
 config = json.load(reader)
 TEST_IMAGE_DIRECTORY = config["test_image_directory"]
 IMAGE_PLAUSIBILITIES = config["intermediate_data_directory"]
 RESULTS_DIRECTORY = config["results_data_directory"]
-CLASSIFICATION_CHECKPOINT = config["classification_checkpoint"]
-if config["dataset"] == 'MedMNIST':
-    LABELS = MEDMNIST_CLASSES
-elif config["dataset"] == 'FitzPatrick17k':
-    LABELS = FITZ17K_CLASSES
-else:
-    LABELS = None
-ALPHA = 0.05
+CLASSIFICATION_CHECKPOINT = config["classification_checkpoint"]'''
+
+ALPHA = 0.1
 NUM_SAMPLES = 1000
 USE_SOFTMAX = True
 LOGIT_SCALE = 100.0 if USE_SOFTMAX else 1.0
-MODEL_ID = CLASSIFICATION_CHECKPOINT
+
+MODEL_ID = "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" #"hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+
+if False:
+    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-pets\\oxford-pets")
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets")
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
+    dataset = 'OxfordPets'
+if True:
+    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-fitz17k\\fitzpatrick-17k")
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k")
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
+    dataset = 'FitzPatrick17k'
+if False:
+    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\selenium-medmnist\\medmnist_microscopy")
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist")
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
+    dataset = 'MedMNIST'
+
+
+if dataset == 'MedMNIST':
+    LABELS = MEDMNIST_CLASSES
+elif dataset == 'FitzPatrick17k':
+    LABELS = FITZ17K_CLASSES
+elif dataset == 'OxfordPets':
+    LABELS = PETS_CLASSES
+else:
+    LABELS = None
 
 #Model Methods
 #-----------------------------------------------------------------------------------
@@ -108,14 +133,17 @@ calib_true_class_arr = []
 calib_sim_score_arr = []
 calib_plausibility_score_arr = []
 #Loop through image
-for label in os.listdir(CALIB_IMAGE_DIRECTORY):
+for label in os.listdir(IMAGE_PLAUSIBILITIES):
     print("Beginning Calibration Embedding Generation: {label}".format(label=label))
     avg = torch.zeros(len(LABELS.items())+1)
     num_images = 0
-    for img in os.listdir(CALIB_IMAGE_DIRECTORY / label):
+    for plaus in os.listdir(IMAGE_PLAUSIBILITIES / label):
         # Retrieve plausibilities array
         try: 
-            plausibility_arr = torch.load(IMAGE_PLAUSIBILITIES / label / (img.split('.')[0]+"_plausibilities"))
+            plausibility_arr = torch.load(IMAGE_PLAUSIBILITIES / label / plaus)
+            if not torch.all(torch.isnan(plausibility_arr)==False):
+                print('ERROR')
+            image = Image.open(CALIB_IMAGE_DIRECTORY / label / (plaus+'.jpeg'))
         except:
             print("Error")
             continue
@@ -123,7 +151,6 @@ for label in os.listdir(CALIB_IMAGE_DIRECTORY):
         class_onehot = torch.zeros(len(LABELS.items()))
         class_onehot[int(label)] = 1
         # Build similarity array
-        image = Image.open(CALIB_IMAGE_DIRECTORY / label / img)
         image_logit = openclip_image_preprocess(image)
         label_probs = openclip_process(image_logit, label_logits)
         # Append to matrices
@@ -135,12 +162,12 @@ for label in os.listdir(CALIB_IMAGE_DIRECTORY):
         num_images += 1
         if num_images >= NUM_SAMPLES: break
     avg = avg/len(os.listdir(CALIB_IMAGE_DIRECTORY / label))
-    print(avg[int(label)])
 #Append Matrices
 calib_true_class_arr = torch.vstack(calib_true_class_arr)
 calib_sim_score_arr = torch.vstack(calib_sim_score_arr)
 calib_plausibility_score_arr = torch.vstack(calib_plausibility_score_arr)
-
+print(torch.all(torch.isnan(calib_plausibility_score_arr)==False))
+print(torch.min(calib_plausibility_score_arr))
 #Generate Test Matrices
 #-----------------------------------------------------------------------------------
 print("Generating Test Matrices")

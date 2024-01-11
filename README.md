@@ -1,9 +1,6 @@
 # WebCP
 Conformal prediction in zero-shot settings
 
-## Note: as of 10/14/2023 this repository is still a WIP 
-We are currently in the process of migrating from the /main and /dutta branch in our original experimental repository. Code for performing data-mining, context extraction, and context plausibility generation currently in the process of being ported to this repo.
-
 ## Setup
 
 ### Required Packages:

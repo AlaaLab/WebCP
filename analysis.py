@@ -14,13 +14,10 @@ import argparse
 
 script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
 base_path = script_path.parent.absolute()
-sys.path.append(base_path + '\\cp')
-sys.path.append(base_path + '\\utils')
-from pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
-from fitz17k_classes import FITZ17K_CLASSES, FITZ17K_GENERIC_CLASSES
-from medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
-from conformal_prediction_methods import *
-from metrics import *
+sys.path.append(base_path / 'cp')
+sys.path.append(base_path / 'utils')
+from cp.conformal_prediction_methods import *
+from cp.metrics import *
 
 # Methods
 def performance_report(threshold, calib_sim_score_arr, test_sim_score_arr, calib_true_class_arr, test_true_class_arr):
@@ -42,20 +39,29 @@ def performance_report(threshold, calib_sim_score_arr, test_sim_score_arr, calib
     return (calib_coverage, np.mean(calib_samplewise_efficiency), test_coverage, np.mean(test_samplewise_efficiency))
 
 #Parse Arguments
-parser = argparse.ArgumentParser()
+'''parser = argparse.ArgumentParser()
 parser.add_argument('--exp', type=str, help='Experiment in experiment_configs to run')
 parser.add_argument('--out', type=str, help='Where to output charts')
 args = parser.parse_args()
 
 # Parameters
 reader = open(base_path + "\\experiment_configs\\"  + args.exp)
-config = json.load(reader)
-RESULTS_DIRECTORY = config["results_data_directory"]
-OUTPUT_RESULT_DIR = args.out
-CALIB_SIZE_CURVE = True
-ALPHA_CURVE = True
-UNCERTAIN_HIST = True
-PLAUSIBILITY_HISTOGRAM = True
+config = json.load(reader)'''
+
+if False:
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
+    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
+if True:
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
+    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
+if False:
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
+    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
+
+CALIB_SIZE_CURVE = False
+ALPHA_CURVE = False
+UNCERTAIN_HIST = False
+PLAUSIBILITY_HISTOGRAM = False
 ORACLE = True
 ALPHA = 0.5
 NUM_SAMPLES = 100
@@ -79,7 +85,7 @@ if ORACLE:
     oracle_metrics = []
     norm_metrics = []
     amb_metrics = []
-    alpha_values = [0.1*i for i in range(1, 6)]
+    alpha_values = [0.05*i for i in range(1, 9)]
     # Generate numpy matrices
     calib_sim_score_arr_np = calib_sim_score_arr.detach().cpu().numpy()
     calib_true_class_arr_np = calib_true_class_arr.detach().cpu().numpy()
@@ -117,6 +123,9 @@ if ORACLE:
     delta_norm = [norm_metrics[i][2]+alpha_values[i]-1 for i in range(0, len(norm_metrics))]
     delta_amb = [amb_metrics[i][2]+alpha_values[i]-1 for i in range(0, len(amb_metrics))]
     delta_oracle = [oracle_metrics[i][2]+alpha_values[i]-1 for i in range(0, len(oracle_metrics))]
+    norm = [norm_metrics[i][2] for i in range(0, len(norm_metrics))]
+    amb = [amb_metrics[i][2] for i in range(0, len(amb_metrics))]
+    oracle = [oracle_metrics[i][2] for i in range(0, len(oracle_metrics))]
     eff_norm = [norm_metrics[i][3] for i in range(0, len(norm_metrics))]
     eff_amb = [amb_metrics[i][3] for i in range(0, len(amb_metrics))]
     eff_oracle = [oracle_metrics[i][3] for i in range(0, len(oracle_metrics))]
@@ -128,24 +137,28 @@ if ORACLE:
     print([oracle_metrics[i][3] for i in range(0, len(oracle_metrics))])
     print(delta_oracle)
     # Generate Plots
-    plt.plot(alpha_values, delta_norm, color='blue', label='normal')
-    plt.plot(alpha_values, delta_amb, color='red', label = 'ambiguous')
-    plt.plot(alpha_values, delta_oracle, color='green', label = 'oracle')
+    #plt.plot(alpha_values, delta_norm, color='blue', label='normal')
+    #plt.plot(alpha_values, delta_amb, color='red', label = 'ambiguous')
+    #plt.plot(alpha_values, delta_oracle, color='green', label = 'oracle')
+    plt.plot(alpha_values, norm, color='blue', label='Normal CP')
+    plt.plot(alpha_values, amb, color='red', label = 'CP w/ Ambiguous Ground Truth')
+    plt.plot(alpha_values, oracle, color='green', label = 'Oracle CP')
     plt.axhline(y = 0.0, color = 'grey', linestyle = '-')
     plt.title(u'Alpha Value v. Target-Test Coverage Δ')
     plt.xlabel(u'Alpha Value (α)')
-    plt.ylabel(u'Target (1-α) v. Test Coverage Δ')
+    #plt.ylabel(u'Target (1-α) v. Test Coverage Δ')
+    plt.ylabel(u'Test Coverage')
     plt.legend()
-    #plt.savefig(OUTPUT_RESULT_DIR / "Delta-Coverage_Alpha.png")
+    plt.savefig(OUTPUT_RESULT_DIR / "Coverage_Alpha.png")
     plt.show()
-    plt.plot(alpha_values, eff_norm, color='blue', label='normal')
-    plt.plot(alpha_values, eff_amb, color='red', label = 'ambiguous')
-    plt.plot(alpha_values, eff_oracle, color='green', label = 'oracle')
+    plt.plot(alpha_values, eff_norm, color='blue', label='Normal CP')
+    plt.plot(alpha_values, eff_amb, color='red', label = 'CP w/ Ambiguous Ground Truth')
+    plt.plot(alpha_values, eff_oracle, color='green', label = 'Oracle CP')
     plt.title(u'Oracle Normal v. Data-mined Ambiguous Efficiency')
     plt.xlabel(u'Alpha Value (α)')
     plt.ylabel(u'Efficiency (extraneous classes per sample)')
     plt.legend()
-    #plt.savefig(OUTPUT_RESULT_DIR / "Efficiency_Alpha.png")
+    plt.savefig(OUTPUT_RESULT_DIR / "Efficiency_Alpha.png")
     plt.show()
 
 # CP Metrics vs. Calibration Set Size

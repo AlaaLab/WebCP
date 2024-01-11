@@ -10,6 +10,7 @@ import torch
 import open_clip
 import json
 import argparse
+import pickle
 
 script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
 base_path = script_path.parent.absolute()
@@ -66,7 +67,6 @@ def openclip_process(image_logits, text_logits, temp = 100.0):
 model, _, preprocess = open_clip.create_model_and_transforms('hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg')
 tokenizer = open_clip.get_tokenizer('hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg')
 model.to(device)
-
 # Calculate Plausibilities
 print("Preprocess Text Prompts")
 junk_logits = openclip_text_preprocess(junk_labels)
