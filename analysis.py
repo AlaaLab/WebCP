@@ -51,10 +51,10 @@ config = json.load(reader)'''
 if False:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
     OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
-if True:
+if False:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
     OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
-if False:
+if True:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
     OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
 
@@ -64,7 +64,7 @@ UNCERTAIN_HIST = False
 PLAUSIBILITY_HISTOGRAM = False
 ORACLE = True
 ALPHA = 0.5
-NUM_SAMPLES = 100
+NUM_SAMPLES = 300
 LOGIT_SCALE = 100.0
 
 # Load Files

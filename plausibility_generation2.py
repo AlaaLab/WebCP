@@ -52,11 +52,11 @@ if False:
     CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
     DATASET = 'OxfordPets'
-if True:
+if False:
     CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
     DATASET = 'FitzPatrick17k'
-if False:
+if True:
     CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
     DATASET = 'MedMNIST'
@@ -78,6 +78,7 @@ else:
 classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-1", device=0) #"valhalla/distilbart-mnli-12-1" "facebook/bart-large-mnli"
 # Encode Labels
 #label_embed = model.encode([label for label in LABELS.values()])
+labels = [label for label in LABELS.values()]
 #pseudo_embed = model.encode([label for label in PSEUDO_LABELS.values()])
 # Loop through caption folders
 for label in os.listdir(CONTEXT_DIRECTORY):
@@ -89,7 +90,6 @@ for label in os.listdir(CONTEXT_DIRECTORY):
     avgn = 0
     for file in os.listdir(CONTEXT_DIRECTORY / label):
         # Load captions 
-        print('a')
         if file.endswith("_debug.pkl"): continue
         captions = pickle.load(open(CONTEXT_DIRECTORY / label / file, 'rb'))
         if len(captions) <= 1: continue
@@ -100,6 +100,7 @@ for label in os.listdir(CONTEXT_DIRECTORY):
             main_score = classifier(captions[0], list(LABELS.values()))
             main_score = scores_converter(main_score, list(LABELS.values()))
             main_score = torch.tensor(main_score)
+            main_score = torch.nn.functional.softmax(main_score*10.0)
         if False:
             main_score = torch.from_numpy(label_embed @ main_embed)
             main_score = torch.nn.functional.softmax(main_score*200.0)
@@ -117,9 +118,12 @@ for label in os.listdir(CONTEXT_DIRECTORY):
         if True:
             second_score = []
             second_search = captions[1:]
+            label_set = list(set(PSEUDO_LABELS.values()))
             for caption in second_search:
-                score = classifier(caption, list(set(PSEUDO_LABELS.values())), multi_label=True)
-                score = scores_converter(score, list(PSEUDO_LABELS.values()))
+                label_set = label_set #+ [labels[int(label)]]
+                score_dict = classifier(caption, label_set, multi_label=True)
+                score = scores_converter(score_dict, list(PSEUDO_LABELS.values()))
+                #score[int(label)] = max(score[int(label)], scores_converter(score_dict, [labels[int(label)]])[0])
                 second_score.append(score)
             second_score = [torch.tensor(score) for score in second_score]
             second_score = torch.stack(second_score)
@@ -159,6 +163,9 @@ for label in os.listdir(CONTEXT_DIRECTORY):
         avg2 += junk_prob
         scores = torch.cat([scores, torch.tensor([junk_prob])])
         scores[scores < 0.0] = 0.0
+        #if junk_prob > 0.9:
+        #    scores = scores * 0.0
+        #    scores[len(scores)-1] = 1.0
         #avg += scores[int(label)]
         avgn += 1
         if avgn >= 10: break
@@ -168,7 +175,7 @@ for label in os.listdir(CONTEXT_DIRECTORY):
         print(captions[1:])
         print(second_score)
         print(scores)
-        exit()'''
+        print('------------------------------')'''
         torch.save(scores, IMAGE_PLAUSIBILITIES / label / (str(int(file.split(".")[0]))))
     print(avg/avgn)
     print(avg2/avgn)
