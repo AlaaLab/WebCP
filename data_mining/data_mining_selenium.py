@@ -4,26 +4,17 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 import traceback
-from image_caption_scraper import Image_Caption_Scraper
+from image_caption_scraper.scraper import Image_Caption_Scraper
 import yaml
 import argparse
 from multiprocessing import Pool
 
 
 def selenium_process(ls):
-    class_id, class_name, config = ls
+    class_id, class_name, config, logger = ls
 
     this_res_dir = config['scraping_store_dir'] / f"{class_id}"
     this_res_dir.mkdir(exist_ok=True)
-    logging.basicConfig(filename=this_res_dir/f"events.log",
-                        format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', filemode="w")
-    logger = logging.getLogger("my-logger")
-    logger.setLevel(logging.INFO)
-
-    # set up logging to console
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    logger.addHandler(console)
 
     logger.info(f"Class: {class_id}, {class_name}")
 
@@ -33,12 +24,10 @@ def selenium_process(ls):
             num_images=config['set_size'],
             query=class_name,
             out_dir=str(this_res_dir),
-            headless=False,
-            driver="~/Downloads/chromedriver",
+            headless=True,
             expand=False,
             # k=3
         )
-
         scraper.scrape(save_images=True)
         scraper.close()
     except Exception as e:
@@ -58,7 +47,7 @@ def main():
         if (k[-4:] == '_dir'):
             config[k] = Path(v)
 
-    config['scraping_store_dir'].mkdir(exist_ok=True)
+    config['scraping_store_dir'].mkdir(exist_ok=False)
 
     logging.basicConfig(filename=config['scraping_store_dir']/f"events.log",
                         format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', filemode="w")
@@ -77,11 +66,10 @@ def main():
         row = class_df.iloc[i, :]
         class_dict[row["Class Index"]] = row["Class"]
 
-    request_list = [(class_id, class_name, config) for class_id, class_name in class_dict.items() if (class_id not in config['class_id_exclude_list'] and (
+    request_list = [(class_id, class_name, config, logger) for class_id, class_name in class_dict.items() if (class_id not in config['class_id_exclude_list'] and (
         True if config['class_id_start'] is None else config['class_id_start'] <= class_id) and (True if config['class_id_end'] is None else class_id < config['class_id_end']))]
-    print(request_list)
 
-    with Pool(processes=config['num_threads']) as executor:
+    with Pool(processes=config['num_selenium_threads']) as executor:
         executor.map(selenium_process, request_list)
 
 
