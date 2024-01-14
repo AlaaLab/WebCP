@@ -30,7 +30,6 @@ class Image_Caption_Scraper():
         """Initialization is only starting the web driver and getting the public IP address"""
         logger.info("Initializing scraper")
         
-        self.public_ip = self.get_public_ip_address()
         self.google_start_index = 0
 
         self.cfg = parse_args(engine,num_images,query,out_dir,headless,driver,expand,k)
@@ -172,7 +171,7 @@ class Image_Caption_Scraper():
                             'caption':caption,
                             'datetime': now,
                             'source': 'google',
-                            'public_ip': self.public_ip
+                            'public_ip': Image_Caption_Scraper.public_ip
                         }
                         logger.info(f"Finished {len(img_data)}/{self.cfg.num_images} images for Google.")
                 except:
@@ -244,7 +243,7 @@ class Image_Caption_Scraper():
                             'caption':self.cfg.query, # caption
                             'datetime': now,
                             'source': 'google',
-                            'public_ip': self.public_ip
+                            'public_ip': Image_Caption_Scraper.public_ip
                         }
                         logger.info(f"Finished {len(img_data)}/{self.cfg.num_images} images for Yahoo.")
                 
@@ -304,7 +303,7 @@ class Image_Caption_Scraper():
                             'caption':caption,
                             'datetime': now,
                             'source': 'flickr',
-                            'public_ip': self.public_ip
+                            'public_ip': Image_Caption_Scraper.public_ip
                         }
 
                         logger.info(f"Finished {len(img_data)}/{self.cfg.num_images} images for Flickr.")

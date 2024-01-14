@@ -1,0 +1,1001 @@
+Class Index,Class Name
+0,cypriniform fish
+1,cypriniform fish
+2,shark
+3,shark
+4,elasmobranch
+5,elasmobranch
+6,elasmobranch
+7,vertebrate
+8,vertebrate
+9,bird
+10,oscine
+11,oscine
+12,oscine
+13,oscine
+14,finch
+15,oscine
+16,thrush
+17,oscine
+18,oscine
+19,oscine
+20,passerine
+21,bird of prey
+22,bird of prey
+23,bird
+24,bird of prey
+25,amphibian
+26,salamander
+27,salamander
+28,salamander
+29,salamander
+30,frog
+31,amphibian
+32,amphibian
+33,turtle
+34,turtle
+35,chelonian
+36,chelonian
+37,chelonian
+38,lizard
+39,lizard
+40,lizard
+41,lizard
+42,lizard
+43,lizard
+44,lizard
+45,lizard
+46,lizard
+47,lizard
+48,lizard
+49,crocodilian reptile
+50,crocodilian reptile
+51,ornithischian
+52,snake
+53,snake
+54,snake
+55,snake
+56,snake
+57,snake
+58,snake
+59,snake
+60,snake
+61,constrictor
+62,boa
+63,elapid
+64,mamba
+65,diapsid
+66,snake
+67,pit viper
+68,pit viper
+69,invertebrate
+70,arthropod
+71,arthropod
+72,arachnid
+73,arachnid
+74,arachnid
+75,arachnid
+76,arachnid
+77,arachnid
+78,arachnid
+79,invertebrate
+80,game bird
+81,game bird
+82,game bird
+83,game bird
+84,pheasant
+85,game bird
+86,game bird
+87,bird
+88,bird
+89,parrot
+90,parrot
+91,cuculiform bird
+92,bird
+93,bird
+94,bird
+95,bird
+96,bird
+97,anseriform bird
+98,sea duck
+99,waterfowl
+100,aquatic bird
+101,vertebrate
+102,prototherian
+103,prototherian
+104,marsupial
+105,marsupial
+106,metatherian
+107,invertebrate
+108,coelenterate
+109,coral
+110,invertebrate
+111,invertebrate
+112,mollusk
+113,mollusk
+114,mollusk
+115,mollusk
+116,invertebrate
+117,mollusk
+118,decapod crustacean
+119,decapod crustacean
+120,decapod crustacean
+121,decapod crustacean
+122,lobster
+123,decapod crustacean
+124,crustacean
+125,crustacean
+126,crustacean
+127,wading bird
+128,wading bird
+129,aquatic bird
+130,aquatic bird
+131,wading bird
+132,heron
+133,wading bird
+134,aquatic bird
+135,aquatic bird
+136,gallinule
+137,rail
+138,aquatic bird
+139,plover
+140,shorebird
+141,shorebird
+142,shorebird
+143,wading bird
+144,seabird
+145,sphenisciform seabird
+146,seabird
+147,whale
+148,toothed whale
+149,aquatic mammal
+150,seal
+151,dog
+152,dog
+153,dog
+154,dog
+155,dog
+156,toy spaniel
+157,toy dog
+158,dog
+159,dog
+160,hunting dog
+161,hunting dog
+162,hunting dog
+163,hunting dog
+164,hunting dog
+165,hound
+166,hound
+167,hound
+168,hunting dog
+169,hound
+170,hound
+171,hound
+172,hound
+173,hunting dog
+174,hunting dog
+175,hunting dog
+176,hunting dog
+177,hunting dog
+178,hunting dog
+179,terrier
+180,terrier
+181,hunting dog
+182,hunting dog
+183,hunting dog
+184,hunting dog
+185,hunting dog
+186,hunting dog
+187,hunting dog
+188,terrier
+189,terrier
+190,wirehair
+191,hunting dog
+192,hunting dog
+193,hunting dog
+194,hunting dog
+195,hunting dog
+196,terrier
+197,terrier
+198,terrier
+199,hunting dog
+200,hunting dog
+201,hunting dog
+202,hunting dog
+203,hunting dog
+204,hunting dog
+205,sporting dog
+206,sporting dog
+207,sporting dog
+208,sporting dog
+209,sporting dog
+210,sporting dog
+211,sporting dog
+212,sporting dog
+213,sporting dog
+214,sporting dog
+215,sporting dog
+216,sporting dog
+217,spaniel
+218,spaniel
+219,sporting dog
+220,sporting dog
+221,spaniel
+222,working dog
+223,working dog
+224,shepherd dog
+225,shepherd dog
+226,working dog
+227,working dog
+228,working dog
+229,working dog
+230,working dog
+231,working dog
+232,working dog
+233,working dog
+234,working dog
+235,working dog
+236,watchdog
+237,watchdog
+238,working dog
+239,working dog
+240,working dog
+241,working dog
+242,dog
+243,dog
+244,working dog
+245,working dog
+246,dog
+247,dog
+248,dog
+249,working dog
+250,working dog
+251,canine
+252,watchdog
+253,canine
+254,canine
+255,canine
+256,canine
+257,canine
+258,dog
+259,dog
+260,dog
+261,dog
+262,dog
+263,dog
+264,dog
+265,dog
+266,dog
+267,dog
+268,canine
+269,canine
+270,canine
+271,canine
+272,canine
+273,canine
+274,canine
+275,canine
+276,carnivore
+277,canine
+278,canine
+279,canine
+280,canine
+281,cat
+282,cat
+283,cat
+284,cat
+285,cat
+286,cat
+287,cat
+288,feline
+289,feline
+290,feline
+291,feline
+292,feline
+293,feline
+294,carnivore
+295,carnivore
+296,carnivore
+297,carnivore
+298,carnivore
+299,carnivore
+300,insect
+301,insect
+302,insect
+303,insect
+304,insect
+305,lamellicorn beetle
+306,lamellicorn beetle
+307,insect
+308,insect
+309,insect
+310,insect
+311,insect
+312,insect
+313,insect
+314,insect
+315,insect
+316,insect
+317,insect
+318,insect
+319,insect
+320,insect
+321,butterfly
+322,lepidopterous insect
+323,butterfly
+324,butterfly
+325,lepidopterous insect
+326,lepidopterous insect
+327,invertebrate
+328,invertebrate
+329,invertebrate
+330,leporid
+331,lagomorph
+332,leporid
+333,placental
+334,placental
+335,squirrel
+336,placental
+337,placental
+338,rodent
+339,equine
+340,odd-toed ungulate
+341,even-toed ungulate
+342,even-toed ungulate
+343,even-toed ungulate
+344,ungulate
+345,bovine
+346,bovid
+347,ruminant
+348,bovid
+349,wild sheep
+350,goat
+351,bovid
+352,bovid
+353,bovid
+354,even-toed ungulate
+355,ungulate
+356,carnivore
+357,carnivore
+358,carnivore
+359,carnivore
+360,carnivore
+361,carnivore
+362,carnivore
+363,placental
+364,edentate
+365,anthropoid ape
+366,anthropoid ape
+367,anthropoid ape
+368,anthropoid ape
+369,anthropoid ape
+370,monkey
+371,monkey
+372,monkey
+373,monkey
+374,monkey
+375,monkey
+376,monkey
+377,monkey
+378,monkey
+379,monkey
+380,monkey
+381,monkey
+382,monkey
+383,primate
+384,primate
+385,pachyderm
+386,pachyderm
+387,carnivore
+388,carnivore
+389,fish
+390,teleost fish
+391,food fish
+392,percoid fish
+393,percoid fish
+394,teleost fish
+395,teleost fish
+396,scorpaenoid
+397,spiny-finned fish
+398,machine
+399,garment
+400,outerwear
+401,wind instrument
+402,stringed instrument
+403,military vehicle
+404,heavier-than-air craft
+405,aircraft
+406,artifact
+407,motor vehicle
+408,self-propelled vehicle
+409,timepiece
+410,outbuilding
+411,clothing
+412,container
+413,machine gun
+414,container
+415,mercantile establishment
+416,sports equipment
+417,aircraft
+418,writing implement
+419,bandage
+420,musical instrument
+421,obstruction
+422,sports equipment
+423,seat
+424,mercantile establishment
+425,building
+426,instrument
+427,container
+428,wheeled vehicle
+429,game equipment
+430,game equipment
+431,furniture
+432,beating-reed instrument
+433,headdress
+434,linen
+435,container
+436,motor vehicle
+437,structure
+438,vessel
+439,headdress
+440,vessel
+441,container
+442,protective covering
+443,fabric
+444,wheeled vehicle
+445,garment
+446,covering
+447,instrument
+448,protective covering
+449,outbuilding
+450,vehicle
+451,neckwear
+452,headdress
+453,furnishing
+454,mercantile establishment
+455,top
+456,instrument
+457,neckwear
+458,structure
+459,clothing
+460,obstruction
+461,plate
+462,implement
+463,container
+464,restraint
+465,garment
+466,train
+467,mercantile establishment
+468,motor vehicle
+469,vessel
+470,source of illumination
+471,weapon
+472,boat
+473,hand tool
+474,garment
+475,reflector
+476,mechanical device
+477,gear
+478,container
+479,machine
+480,device
+481,instrumentality
+482,equipment
+483,defensive structure
+484,sailing vessel
+485,equipment
+486,stringed instrument
+487,telephone
+488,attachment
+489,barrier
+490,armor
+491,power tool
+492,container
+493,furniture
+494,musical instrument
+495,furniture
+496,hosiery
+497,building
+498,building
+499,edge tool
+500,housing
+501,garment
+502,covering
+503,container
+504,drinking vessel
+505,vessel
+506,artifact
+507,fastener
+508,peripheral
+509,mercantile establishment
+510,ship
+511,motor vehicle
+512,opener
+513,wind instrument
+514,footwear
+515,headdress
+516,furniture
+517,device
+518,headdress
+519,container
+520,furniture
+521,cooking utensil
+522,game equipment
+523,stick
+524,armor
+525,obstruction
+526,furniture
+527,digital computer
+528,electronic equipment
+529,clothing
+530,timepiece
+531,timepiece
+532,furniture
+533,fabric
+534,home appliance
+535,brake system
+536,structure
+537,vehicle
+538,protective covering
+539,floor cover
+540,rig
+541,musical instrument
+542,implement
+543,sports equipment
+544,kitchen appliance
+545,device
+546,stringed instrument
+547,self-propelled vehicle
+548,furniture
+549,instrumentality
+550,kitchen appliance
+551,cosmetic
+552,garment
+553,furniture
+554,vessel
+555,motor vehicle
+556,protective covering
+557,stick
+558,wind instrument
+559,seat
+560,headdress
+561,wheeled vehicle
+562,artifact
+563,writing implement
+564,bedroom furniture
+565,wheeled vehicle
+566,wind instrument
+567,cooking utensil
+568,overgarment
+569,motor vehicle
+570,protective covering
+571,mechanical device
+572,container
+573,self-propelled vehicle
+574,game equipment
+575,self-propelled vehicle
+576,vessel
+577,musical instrument
+578,woman's clothing
+579,stringed instrument
+580,structure
+581,barrier
+582,mercantile establishment
+583,instrument
+584,fastener
+585,instrumentality
+586,self-propelled vehicle
+587,tool
+588,container
+589,appliance
+590,personal computer
+591,fabric
+592,memory device
+593,wind instrument
+594,stringed instrument
+595,machine
+596,edge tool
+597,protective covering
+598,building
+599,supporting structure
+600,mechanism
+601,garment
+602,sports equipment
+603,wagon
+604,timepiece
+605,reproducer
+606,appliance
+607,lamp
+608,apparel
+609,motor vehicle
+610,garment
+611,game
+612,wagon
+613,peripheral
+614,garment
+615,clothing
+616,restraint
+617,overgarment
+618,container
+619,protective covering
+620,personal computer
+621,tool
+622,protective covering
+623,edge tool
+624,structure
+625,boat
+626,instrumentality
+627,motor vehicle
+628,ship
+629,cosmetic
+630,footwear
+631,instrumentality
+632,transducer
+633,light microscope
+634,plant
+635,navigational instrument
+636,container
+637,container
+638,hosiery
+639,garment
+640,covering
+641,musical instrument
+642,musical instrument
+643,attire
+644,implement
+645,upright
+646,instrumentality
+647,container
+648,furniture
+649,structure
+650,transducer
+651,home appliance
+652,clothing
+653,container
+654,public transport
+655,garment
+656,van
+657,vehicle
+658,handwear
+659,dish
+660,structure
+661,motor vehicle
+662,equipment
+663,residence
+664,equipment
+665,motorcycle
+666,container
+667,headdress
+668,building
+669,protective covering
+670,vehicle
+671,wheeled vehicle
+672,shelter
+673,device
+674,device
+675,truck
+676,device
+677,restraint
+678,support
+679,adornment
+680,top
+681,personal computer
+682,structure
+683,beating-reed instrument
+684,musical instrument
+685,measuring instrument
+686,device
+687,musical instrument
+688,equipment
+689,garment
+690,wagon
+691,device
+692,container
+693,implement
+694,machine
+695,fastener
+696,implement
+697,clothing
+698,house
+699,wind instrument
+700,piece of cloth
+701,equipment
+702,sports equipment
+703,seat
+704,timepiece
+705,wheeled vehicle
+706,structure
+707,electronic equipment
+708,supporting structure
+709,container
+710,implement
+711,instrumentality
+712,crockery
+713,apparatus
+714,instrumentality
+715,armor plate
+716,barrier
+717,motor vehicle
+718,device
+719,container
+720,vessel
+721,padding
+722,game equipment
+723,machine
+724,vessel
+725,container
+726,tool
+727,structure
+728,container
+729,framework
+730,implement
+731,tool
+732,photographic equipment
+733,implement
+734,truck
+735,overgarment
+736,furniture
+737,vessel
+738,instrumentality
+739,machine
+740,tool
+741,floor cover
+742,electronic equipment
+743,penal institution
+744,instrument
+745,instrument
+746,plate
+747,game equipment
+748,container
+749,writing implement
+750,cloth covering
+751,motor vehicle
+752,implement
+753,device
+754,system
+755,telescope
+756,pool
+757,wheeled vehicle
+758,mechanical device
+759,photographic equipment
+760,home appliance
+761,instrumentality
+762,structure
+763,firearm
+764,gun
+765,seat
+766,kitchen appliance
+767,implement
+768,game equipment
+769,measuring instrument
+770,footwear
+771,box
+772,fastener
+773,container
+774,footwear
+775,garment
+776,beating-reed instrument
+777,protective covering
+778,instrument
+779,public transport
+780,vessel
+781,sheet
+782,electronic device
+783,restraint
+784,tool
+785,belt
+786,appliance
+787,protective covering
+788,mercantile establishment
+789,covering
+790,container
+791,wheeled vehicle
+792,tool
+793,headdress
+794,blind
+795,device
+796,mask
+797,container
+798,computer
+799,movable barrier
+800,machine
+801,device
+802,self-propelled vehicle
+803,self-propelled vehicle
+804,container
+805,game equipment
+806,footwear
+807,device
+808,headdress
+809,dish
+810,lever
+811,device
+812,craft
+813,cooking utensil
+814,boat
+815,trap
+816,implement
+817,motor vehicle
+818,source of illumination
+819,horizontal surface
+820,self-propelled vehicle
+821,structure
+822,musical instrument
+823,instrument
+824,garment
+825,barrier
+826,timepiece
+827,device
+828,device
+829,wheeled vehicle
+830,conveyance
+831,sofa
+832,place of worship
+833,warship
+834,clothing
+835,measuring instrument
+836,lens
+837,optical instrument
+838,toiletry
+839,structure
+840,implement
+841,sweater
+842,garment
+843,artifact
+844,mechanism
+845,instrument
+846,furniture
+847,self-propelled vehicle
+848,equipment
+849,vessel
+850,artifact
+851,communication system
+852,game equipment
+853,protective covering
+854,blind
+855,protective covering
+856,machine
+857,chair
+858,protective covering
+859,home appliance
+860,mercantile establishment
+861,furniture
+862,source of illumination
+863,design
+864,motor vehicle
+865,mercantile establishment
+866,wheeled vehicle
+867,motor vehicle
+868,container
+869,coat
+870,vehicle
+871,sailing vessel
+872,support
+873,structure
+874,public transport
+875,wind instrument
+876,container
+877,movable barrier
+878,device
+879,shelter
+880,vehicle
+881,stringed instrument
+882,appliance
+883,vessel
+884,protective covering
+885,artifact
+886,machine
+887,outerwear
+888,structure
+889,stringed instrument
+890,game equipment
+891,home appliance
+892,timepiece
+893,container
+894,furnishing
+895,vehicle
+896,vessel
+897,home appliance
+898,vessel
+899,bottle
+900,tank
+901,bottle
+902,device
+903,attire
+904,protective covering
+905,blind
+906,neckwear
+907,vessel
+908,device
+909,cooking utensil
+910,cutlery
+911,artifact
+912,fence
+913,vessel
+914,boat
+915,housing
+916,machine
+917,publication
+918,game
+919,street sign
+920,traffic light
+921,wrapping
+922,menu
+923,artifact
+924,dip
+925,dish
+926,dish
+927,dessert
+928,dessert
+929,dessert
+930,french loaf
+931,bun
+932,pretzel
+933,sandwich
+934,sandwich
+935,solanaceous vegetable
+936,cruciferous vegetable
+937,vegetable
+938,vegetable
+939,squash
+940,squash
+941,squash
+942,squash
+943,vegetable
+944,vegetable
+945,pepper
+946,vegetable
+947,vegetable
+948,apple
+949,edible fruit
+950,edible fruit
+951,edible fruit
+952,fruit
+953,fruit
+954,fruit
+955,fruit
+956,fruit
+957,fruit
+958,feed
+959,carbonara
+960,sauce
+961,foodstuff
+962,nutriment
+963,nutriment
+964,nutriment
+965,nutriment
+966,alcohol
+967,beverage
+968,mixed drink
+969,mixed drink
+970,natural elevation
+971,bubble
+972,geological formation
+973,ridge
+974,geological formation
+975,geological formation
+976,geological formation
+977,barrier
+978,geological formation
+979,geological formation
+980,natural elevation
+981,contestant
+982,associate
+983,explorer
+984,seed
+985,angiosperm
+986,orchid
+987,grain
+988,plant reproductive structure
+989,plant reproductive structure
+990,fruit
+991,organism
+992,fungus
+993,organism
+994,organism
+995,organism
+996,organism
+997,organism
+998,plant reproductive structure
+999,toilet tissue

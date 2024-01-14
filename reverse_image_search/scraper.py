@@ -69,6 +69,7 @@ class Google_Reverse_Image_Search():
     def make_query(self, local_image_path):
         """Given the target engine and query, build the target url"""
         self.wd.get("https://images.google.com/")
+        time.sleep(1)
 
         search_button = self.wd.find_elements(By.XPATH, "//div[@aria-label='Search by image' and @role='button']")[0]
         self.wd.execute_script("arguments[0].click();", search_button)

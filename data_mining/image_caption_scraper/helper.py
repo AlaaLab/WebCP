@@ -23,9 +23,9 @@ def read_http(url, engine, query, caption, i):
     with open(caption_file_path, "w") as write_file:
         write_file.write(caption)
 
-    image_url_file_path = os.path.join(f'{i}.image-url')
-    with open(image_url_file_path, "w") as image_url_file:
-        image_url_file.write(url)
+    # image_url_file_path = os.path.join(f'{i}.image-url')
+    # with open(image_url_file_path, "w") as image_url_file:
+    #     image_url_file.write(url)
  
     logger.info(f"Saved image {i}")
 def read_base64(url, engine, query, caption, i):
@@ -41,9 +41,9 @@ def read_base64(url, engine, query, caption, i):
     with open(caption_file_path, "w") as write_file:
         write_file.write(caption)
  
-    image_url_file_path = os.path.join(f'{i}.image-url')
-    with open(image_url_file_path, "w") as image_url_file:
-        image_url_file.write(url)
+    # image_url_file_path = os.path.join(f'{i}.image-url')
+    # with open(image_url_file_path, "w") as image_url_file:
+    #     image_url_file.write(url)
 
     logger.info(f"Saved image {i}")
 

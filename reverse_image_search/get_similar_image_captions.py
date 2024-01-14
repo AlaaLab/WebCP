@@ -14,7 +14,9 @@ from multiprocessing import Pool
 def get_fileidx_list(dataset_subfolder):
     idxSet = set()
     for filePath in dataset_subfolder.iterdir():
-        first = str(filePath).rindex("/")+1
+        if (filePath.is_dir()):
+            continue
+        first = str(filePath).rindex("\\")+1
         last = str(filePath).rindex(".")
         fileIdx = int(str(str(filePath)[first:last]))
         idxSet.add(fileIdx)
@@ -46,8 +48,8 @@ def selenium_process(ls):
         with open(this_res_dir / f"{image_id}.pkl", "wb") as this_res_file:
             pickle.dump(res_list, this_res_file)
 
-        with open(this_res_dir / f"{image_id}_debug.pkl", "wb") as this_res_file:
-            pickle.dump(res_dict, this_res_file)
+        # with open(this_res_dir / f"{image_id}_debug.pkl", "wb") as this_res_file:
+        #     pickle.dump(res_dict, this_res_file)
         scraper.close()
     except Exception as e:
         logger.error(traceback.format_exc())
