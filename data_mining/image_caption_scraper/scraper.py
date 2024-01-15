@@ -16,6 +16,7 @@ import json
 from .expansion import *
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
+import traceback
 
 # print(uuid.uuid4())
 def get_public_ip_address():
@@ -151,14 +152,38 @@ class Image_Caption_Scraper():
                     self.wd.execute_script("arguments[0].click();", content)
                     time.sleep(1)
 
-                    common_path = f'//*[@id="islrg"]/div[1]/div[{i+1}]'
-
-                    caption = self.wd.find_element(By.XPATH, f'{common_path}/a[2]').text
+                    # common_path = f'//*[@id="islrg"]/div[1]/div[{i+1}]'
+                    common_elem = self.wd.find_element(By.CSS_SELECTOR, f'div.tvh9oe.BIB1wf.hVa2Fd')
+                    caption = common_elem.find_element(By.CSS_SELECTOR, f'a.Hnk30e.indIKd > h1').text
 
                     # url = self.wd.find_elements_by_css_selector('img.n3VNCb')[0]
                     
-                    url = self.wd.find_element(By.XPATH, f'{common_path}/a[1]/div[1]/img')
+                    # old; fails on image 25 because trips on relevant searches
+                    # if (len(self.wd.find_elements(By.XPATH, f'{common_path}/a[1]/div[1]/img')) == 0):
+                    #     time.sleep(10)
+                    # url = self.wd.find_element(By.XPATH, f'{common_path}/a[1]/div[1]/img')
 
+                    # rewritten
+                    url_elems = common_elem.find_elements(By.CSS_SELECTOR, f'div.p7sI2.PUxBg')
+                    url = None
+                    if len(url_elems) > 1:
+                        raise Exception("REEE")
+                    if len(url_elems) == 1:
+                        for i in range(5):
+                            if (len(common_elem.find_elements(By.CSS_SELECTOR, f'div.p7sI2.PUxBg > a > img')) < 2):
+                                # logger.info(common_elem.find_elements(By.CSS_SELECTOR, f'div.p7sI2.PUxBg > a > img')[0].get_attribute("src")[0:min(20, len(common_elem.find_elements(By.CSS_SELECTOR, f'div.p7sI2.PUxBg > a > img')[0].get_attribute("src")))])
+                                time.sleep(1)
+                            else:
+                                break
+                        url = common_elem.find_elements(By.CSS_SELECTOR, f'div.p7sI2.PUxBg > a > img')[1]
+                    else: #product listing
+                        for i in range(5):
+                            if (len(common_elem.find_elements(By.CSS_SELECTOR, f'span.sal6Qd.Z5wwMb div[jsname="PBh85b"] > img')) < 2):
+                                time.sleep(1)
+                            else:
+                                break
+                        url = common_elem.find_elements(By.CSS_SELECTOR, f'span.sal6Qd.Z5wwMb div[jsname="PBh85b"] > img')[1]
+                    
                     if url.get_attribute('src') and not url.get_attribute('src').endswith('gif') and url.get_attribute('src') not in img_data:
 
                         now = datetime.now().astimezone()
@@ -176,6 +201,7 @@ class Image_Caption_Scraper():
                         logger.info(f"Finished {len(img_data)}/{self.cfg.num_images} images for Google.")
                 except:
                     logger.debug("Couldn't load image and caption for Google")
+                    logger.debug(traceback.format_exc())
                 
                 if(len(img_data)>self.cfg.num_images-1): 
                     logger.info(f"Finished scraping {self.cfg.num_images} for Google!")
