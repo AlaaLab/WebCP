@@ -20,7 +20,7 @@ sys.path.append(base_path / 'utils')
 from utils.pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
 from utils.fitz17k_classes import FITZ17K_CLASSES, FITZ17K_GENERIC_CLASSES
 from utils.medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
-from utils.imagenet_classes import IMAGENET2012_CLASSES
+from utils.imagenet_classes import IMAGENET_CLASSES, IMAGENET_GENERIC_CLASSES
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("CUDA ENABLED: {}".format(str(torch.cuda.is_available())))
@@ -49,17 +49,20 @@ def scores_converter(scores, labels):
 
 # Parameters
 if False:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
     DATASET = 'OxfordPets'
-if False:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_caption-results")
+if True:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
     DATASET = 'FitzPatrick17k'
-if True:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_caption-results")
+if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
     DATASET = 'MedMNIST'
+if False:
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_plausibilities")
+    DATASET =  'ImageNet'
+if False:
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256")
+    DATASET =  'Caltech256'
 
 if DATASET == 'MedMNIST':
     LABELS = MEDMNIST_CLASSES
@@ -70,6 +73,9 @@ elif DATASET == 'FitzPatrick17k':
 elif DATASET == 'OxfordPets':
     LABELS = PETS_CLASSES
     PSEUDO_LABELS = PETS_GENERIC_CLASSES
+elif DATASET == 'ImageNet':
+    LABELS = IMAGENET_CLASSES
+    PSEUDO_LABELS = IMAGENET_GENERIC_CLASSES
 else:
     LABELS = None
 
@@ -81,26 +87,25 @@ classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnl
 labels = [label for label in LABELS.values()]
 #pseudo_embed = model.encode([label for label in PSEUDO_LABELS.values()])
 # Loop through caption folders
-for label in os.listdir(CONTEXT_DIRECTORY):
+for label in os.listdir(IMAGE_PLAUSIBILITIES):
     print("Beginning Plausibility Generation: {label}".format(label=label))
     os.makedirs(IMAGE_PLAUSIBILITIES / label, exist_ok=True)
     # Loop through image captions
     avg = 0.0
     avg2 = 0.0
     avgn = 0
-    for file in os.listdir(CONTEXT_DIRECTORY / label):
+    for file in os.listdir(IMAGE_PLAUSIBILITIES / label):
         # Load captions 
-        if file.endswith("_debug.pkl"): continue
-        captions = pickle.load(open(CONTEXT_DIRECTORY / label / file, 'rb'))
-        if len(captions) <= 1: continue
+        if not file.endswith("_main"): continue
+        name = file.split("_")[0]
+        main_score = torch.load(IMAGE_PLAUSIBILITIES / label / (name+'_main'))
+        second_score = torch.load(IMAGE_PLAUSIBILITIES / label / (name+'_second'))[1:]
         # Calculate embedding of main caption
         #main_embed = model.encode(captions[0])
         # Calculate softmax dot product between embedding and list of labels
         if True:
-            main_score = classifier(captions[0], list(LABELS.values()))
-            main_score = scores_converter(main_score, list(LABELS.values()))
-            main_score = torch.tensor(main_score)
-            main_score = torch.nn.functional.softmax(main_score*10.0)
+            main_score = main_score
+            #main_score = torch.nn.functional.softmax(main_score*10.0, dim=0)
         if False:
             main_score = torch.from_numpy(label_embed @ main_embed)
             main_score = torch.nn.functional.softmax(main_score*200.0)
@@ -116,18 +121,9 @@ for label in os.listdir(CONTEXT_DIRECTORY):
         #second_embed = model.encode(captions[1:])
         # Calculate softmax average dot product between embedding and list of pseudo-labels
         if True:
-            second_score = []
-            second_search = captions[1:]
-            label_set = list(set(PSEUDO_LABELS.values()))
-            for caption in second_search:
-                label_set = label_set #+ [labels[int(label)]]
-                score_dict = classifier(caption, label_set, multi_label=True)
-                score = scores_converter(score_dict, list(PSEUDO_LABELS.values()))
-                #score[int(label)] = max(score[int(label)], scores_converter(score_dict, [labels[int(label)]])[0])
-                second_score.append(score)
-            second_score = [torch.tensor(score) for score in second_score]
-            second_score = torch.stack(second_score)
-            second_score = torch.mean(second_score, dim=0)
+            topx = max(1, int(1.0*second_score.shape[0]))
+            second_score, _ = torch.sort(second_score, dim=0)
+            second_score = torch.mean(second_score[-1*topx:], dim=0)
         if False:
             second_score = torch.from_numpy(pseudo_embed @ second_embed.T)
             #second_score, _ = torch.sort(second_score, dim=1)
@@ -160,22 +156,22 @@ for label in os.listdir(CONTEXT_DIRECTORY):
         scores = torch.mul(main_score, second_score)
         junk_prob = 1.0 - torch.sum(scores)
         avg += scores[int(label)]
-        avg2 += junk_prob
+        avg2 += second_score[int(label)]
         scores = torch.cat([scores, torch.tensor([junk_prob])])
         scores[scores < 0.0] = 0.0
         #if junk_prob > 0.9:
         #    scores = scores * 0.0
         #    scores[len(scores)-1] = 1.0
         #avg += scores[int(label)]
-        avgn += 1
-        if avgn >= 10: break
+        print(second_score[int(label)], torch.argmax(scores))
         '''print(LABELS["0"])
-        print(captions[0])
-        print(main_score)
+        print(title)
+        print(main_score[0])
         print(captions[1:])
-        print(second_score)
         print(scores)
         print('------------------------------')'''
-        torch.save(scores, IMAGE_PLAUSIBILITIES / label / (str(int(file.split(".")[0]))))
+        torch.save(scores, IMAGE_PLAUSIBILITIES / label / (file.split(".")[0]+'_plausibilities'))
+        avgn += 1
+        if avgn >= 10: break
     print(avg/avgn)
     print(avg2/avgn)

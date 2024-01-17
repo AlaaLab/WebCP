@@ -51,12 +51,18 @@ config = json.load(reader)'''
 if False:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
     OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
-if False:
+if True:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
     OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
-if True:
+if False:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
     OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
+if False:
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
+    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
+if False:
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
+    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
 
 CALIB_SIZE_CURVE = False
 ALPHA_CURVE = False
@@ -64,7 +70,7 @@ UNCERTAIN_HIST = False
 PLAUSIBILITY_HISTOGRAM = False
 ORACLE = True
 ALPHA = 0.5
-NUM_SAMPLES = 300
+NUM_SAMPLES = 1000
 LOGIT_SCALE = 100.0
 
 # Load Files
@@ -126,6 +132,7 @@ if ORACLE:
     norm = [norm_metrics[i][2] for i in range(0, len(norm_metrics))]
     amb = [amb_metrics[i][2] for i in range(0, len(amb_metrics))]
     oracle = [oracle_metrics[i][2] for i in range(0, len(oracle_metrics))]
+    target = [1-alpha for alpha in alpha_values]
     eff_norm = [norm_metrics[i][3] for i in range(0, len(norm_metrics))]
     eff_amb = [amb_metrics[i][3] for i in range(0, len(amb_metrics))]
     eff_oracle = [oracle_metrics[i][3] for i in range(0, len(oracle_metrics))]
@@ -142,7 +149,8 @@ if ORACLE:
     #plt.plot(alpha_values, delta_oracle, color='green', label = 'oracle')
     plt.plot(alpha_values, norm, color='blue', label='Normal CP')
     plt.plot(alpha_values, amb, color='red', label = 'CP w/ Ambiguous Ground Truth')
-    plt.plot(alpha_values, oracle, color='green', label = 'Oracle CP')
+    plt.plot(alpha_values, oracle, color='purple', label = 'Oracle CP')
+    plt.plot(alpha_values, target, color='green', label = 'Target Coverage')
     plt.axhline(y = 0.0, color = 'grey', linestyle = '-')
     plt.title(u'Alpha Value v. Target-Test Coverage Δ')
     plt.xlabel(u'Alpha Value (α)')

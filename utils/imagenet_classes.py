@@ -16,7 +16,7 @@
 from collections import OrderedDict
 
 
-IMAGENET2012_CLASSES = OrderedDict(
+IMAGENET_CLASSES = OrderedDict(
     {
         "0": "tench, Tinca tinca",
         "1": "goldfish, Carassius auratus",
@@ -1021,7 +1021,7 @@ IMAGENET2012_CLASSES = OrderedDict(
     }
 )
 
-IMAGENET2012_GENERIC_CLASSES = OrderedDict(
+IMAGENET_GENERIC_CLASSES = OrderedDict(
     {
         "0": "cypriniform fish",
         "1": "cypriniform fish",
