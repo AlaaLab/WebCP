@@ -52,6 +52,7 @@ def selenium_process(ls):
         #     pickle.dump(res_dict, this_res_file)
         scraper.close()
     except Exception as e:
+        logger.error(f"class id {class_id}, image id {image_id}: error:")
         logger.error(traceback.format_exc())
 
 

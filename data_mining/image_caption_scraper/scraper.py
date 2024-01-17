@@ -200,7 +200,7 @@ class Image_Caption_Scraper():
                         }
                         logger.info(f"Finished {len(img_data)}/{self.cfg.num_images} images for Google.")
                 except:
-                    logger.debug("Couldn't load image and caption for Google")
+                    logger.debug("Couldn't load image and caption for Google query " + self.cfg.query)
                     logger.debug(traceback.format_exc())
                 
                 if(len(img_data)>self.cfg.num_images-1): 
