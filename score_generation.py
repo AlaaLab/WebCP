@@ -10,6 +10,7 @@ import open_clip
 import json
 import argparse
 import pickle
+import traceback
 from transformers import pipeline
 from sentence_transformers import SentenceTransformer, util
 
@@ -21,6 +22,7 @@ from utils.pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
 from utils.fitz17k_classes import FITZ17K_CLASSES, FITZ17K_GENERIC_CLASSES
 from utils.medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
 from utils.imagenet_classes import IMAGENET_CLASSES, IMAGENET_GENERIC_CLASSES
+from utils.caltech256_classes import CALTECH256_CLASSES, CALTECH256_GENERIC_CLASSES
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("CUDA ENABLED: {}".format(str(torch.cuda.is_available())))
@@ -43,7 +45,7 @@ if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets")
     DATASET = 'OxfordPets'
-if True:
+if False:
     CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k")
@@ -57,10 +59,10 @@ if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet")
     DATASET =  'ImageNet'
-if False:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_caption-results")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256")
+if True:
+    CONTEXT_DIRECTORY = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size_caption-results")
+    IMAGE_PLAUSIBILITIES = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size")
     DATASET =  'Caltech256'
 
 if DATASET == 'MedMNIST':
@@ -75,6 +77,9 @@ elif DATASET == 'OxfordPets':
 elif DATASET == 'ImageNet':
     LABELS = IMAGENET_CLASSES
     PSEUDO_LABELS = IMAGENET_GENERIC_CLASSES
+elif DATASET == "Caltech256":
+    LABELS = CALTECH256_CLASSES
+    PSEUDO_LABELS = CALTECH256_GENERIC_CLASSES
 else:
     LABELS = None
 
@@ -87,22 +92,24 @@ labels = [label for label in LABELS.values()]
 #pseudo_embed = model.encode([label for label in PSEUDO_LABELS.values()])
 # Loop through caption folders
 for label in os.listdir(CONTEXT_DIRECTORY):
+    if label.endswith("events.log"): 
+        continue
     print("Beginning Score Generation: {label}".format(label=label))
     os.makedirs(IMAGE_PLAUSIBILITIES / label, exist_ok=True)
     n = 0
     for file in os.listdir(CONTEXT_DIRECTORY / label):
         # Load captions 
-        if file.endswith("_debug.pkl"): continue
+        if file.endswith("_debug.pkl") or file.endswith("events.log"): continue
         try:
             with open(CALIB_IMAGE_DIRECTORY / label / (file.split('.')[0]+'.caption'), 'r') as read:
-                title = [line.rstrip() for line in read]
-            title = title[1]
+                title = "\n".join([line.rstrip() for line in read])
         except:
             print('ERROR PKL LOAD')
+            print(traceback.format_exc())
             continue
         captions = pickle.load(open(CONTEXT_DIRECTORY / label / file, 'rb'))
         if len(captions) <= 1: 
-            print('ERROR # CAPTIONS')
+            print('ERROR # CAPTIONS:' + str(captions))
             continue
         # Main Score 
         main_score = classifier(title, list(LABELS.values()))
