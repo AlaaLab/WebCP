@@ -21,6 +21,8 @@ from utils.pets_classes import PETS_CLASSES, PETS_GENERIC_CLASSES
 from utils.fitz17k_classes import FITZ17K_CLASSES, FITZ17K_GENERIC_CLASSES
 from utils.medmnist_classes import MEDMNIST_CLASSES, MEDMNIST_GENERIC_CLASSES
 from utils.imagenet_classes import IMAGENET_CLASSES, IMAGENET_GENERIC_CLASSES
+from utils.caltech256_classes import CALTECH256_CLASSES, CALTECH256_GENERIC_CLASSES
+
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("CUDA ENABLED: {}".format(str(torch.cuda.is_available())))
@@ -51,7 +53,7 @@ def scores_converter(scores, labels):
 if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
     DATASET = 'OxfordPets'
-if True:
+if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
     DATASET = 'FitzPatrick17k'
 if False:
@@ -60,8 +62,8 @@ if False:
 if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_plausibilities")
     DATASET =  'ImageNet'
-if False:
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256")
+if True:
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
     DATASET =  'Caltech256'
 
 if DATASET == 'MedMNIST':
@@ -76,6 +78,9 @@ elif DATASET == 'OxfordPets':
 elif DATASET == 'ImageNet':
     LABELS = IMAGENET_CLASSES
     PSEUDO_LABELS = IMAGENET_GENERIC_CLASSES
+elif DATASET == 'Caltech256':
+    LABELS = CALTECH256_CLASSES
+    PSEUDO_LABELS = CALTECH256_GENERIC_CLASSES
 else:
     LABELS = None
 
@@ -105,7 +110,7 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         # Calculate softmax dot product between embedding and list of labels
         if True:
             main_score = main_score
-            #main_score = torch.nn.functional.softmax(main_score*10.0, dim=0)
+            #main_score = torch.nn.functional.softmax(main_score*20.0, dim=0)
         if False:
             main_score = torch.from_numpy(label_embed @ main_embed)
             main_score = torch.nn.functional.softmax(main_score*200.0)
@@ -121,9 +126,13 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         #second_embed = model.encode(captions[1:])
         # Calculate softmax average dot product between embedding and list of pseudo-labels
         if True:
-            topx = max(1, int(1.0*second_score.shape[0]))
-            second_score, _ = torch.sort(second_score, dim=0)
-            second_score = torch.mean(second_score[-1*topx:], dim=0)
+            #maxitem = torch.argmax(second_score, dim=1)
+            #second_score=second_score*0.0
+            #for i in range(len(maxitem)): second_score[i][maxitem[i]]=1.0
+            second_score = torch.mean(second_score, dim=0)
+            #topx = max(1, int(1.0*second_score.shape[0]))
+            #second_score, _ = torch.sort(second_score, dim=0)
+            #second_score = torch.mean(second_score[-1*topx:], dim=0)
         if False:
             second_score = torch.from_numpy(pseudo_embed @ second_embed.T)
             #second_score, _ = torch.sort(second_score, dim=1)
@@ -159,11 +168,11 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         avg2 += second_score[int(label)]
         scores = torch.cat([scores, torch.tensor([junk_prob])])
         scores[scores < 0.0] = 0.0
-        #if junk_prob > 0.9:
+        #if junk_prob > 1.0:
         #    scores = scores * 0.0
         #    scores[len(scores)-1] = 1.0
         #avg += scores[int(label)]
-        print(second_score[int(label)], torch.argmax(scores))
+        print(scores[int(label)], second_score[int(label)], torch.argmax(scores))
         '''print(LABELS["0"])
         print(title)
         print(main_score[0])

@@ -20,6 +20,7 @@ from utils.pets_classes import PETS_CLASSES
 from utils.fitz17k_classes import FITZ17K_CLASSES
 from utils.medmnist_classes import MEDMNIST_CLASSES
 from utils.imagenet_classes import IMAGENET_CLASSES
+from utils.caltech256_classes import CALTECH256_CLASSES
 from cp.conformal_prediction_methods import *
 from cp.metrics import *
 
@@ -45,6 +46,7 @@ LOGIT_SCALE = 100.0 if USE_SOFTMAX else 1.0
 
 MODEL_ID = "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" #"hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
 TEST_RELOAD = False
+CALIB_RELOAD =  True
 
 if False:
     TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-pets\\oxford-pets")
@@ -52,7 +54,7 @@ if False:
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets")
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
     dataset = 'OxfordPets'
-if True:
+if False:
     TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-fitz17k\\fitzpatrick-17k")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k")
@@ -70,10 +72,10 @@ if False:
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet")
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
     dataset =  'ImageNet'
-if False:
-    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256")
+if True:
+    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\256_ObjectCategories")
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256")
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
     dataset =  'Caltech256'
 
@@ -85,6 +87,8 @@ elif dataset == 'OxfordPets':
     LABELS = PETS_CLASSES
 elif dataset == 'ImageNet':
     LABELS = IMAGENET_CLASSES
+elif dataset == 'Caltech256':
+    LABELS = CALTECH256_CLASSES
 else:
     LABELS = None
 
@@ -143,53 +147,52 @@ label_logits = openclip_text_preprocess(prompt_list)
 
 #Generate Calibration Matrices
 #-----------------------------------------------------------------------------------
-print("Generating Calibration Matrices")
-calib_true_class_arr = []
-calib_sim_score_arr = []
-calib_plausibility_score_arr = []
-#Loop through image
-for label in os.listdir(IMAGE_PLAUSIBILITIES):
-    print("Beginning Calibration Embedding Generation: {label}".format(label=label))
-    avg = torch.zeros(len(LABELS.items())+1)
-    num_images = 0
-    for plaus in os.listdir(IMAGE_PLAUSIBILITIES / label):
-        # Retrieve plausibilities array
-        if not 'plausibilities' in plaus: continue
-        try: 
-            plausibility_arr = torch.load(IMAGE_PLAUSIBILITIES / label / plaus)
-            if not torch.all(torch.isnan(plausibility_arr)==False):
-                print('ERROR')
-            image = Image.open(CALIB_IMAGE_DIRECTORY / label / (plaus.split('_')[0]+'.jpeg'))
-        except:
-            print("Error")
-            continue
-        # Build label array
-        class_onehot = torch.zeros(len(LABELS.items()))
-        class_onehot[int(label)] = 1
-        # Build similarity array
-        image_logit = openclip_image_preprocess(image)
-        label_probs = openclip_process(image_logit, label_logits)
-        # Append to matrices
-        calib_true_class_arr.append(class_onehot)
-        calib_sim_score_arr.append(label_probs)
-        calib_plausibility_score_arr.append(plausibility_arr)
-        # Update metrics
-        avg = avg + plausibility_arr
-        num_images += 1
-        if num_images >= NUM_SAMPLES: break
-    avg = avg/len(os.listdir(CALIB_IMAGE_DIRECTORY / label))
-#Append Matrices
-calib_true_class_arr = torch.vstack(calib_true_class_arr)
-calib_sim_score_arr = torch.vstack(calib_sim_score_arr)
-calib_plausibility_score_arr = torch.vstack(calib_plausibility_score_arr)
-for i in range(0, 10):
-    print(calib_sim_score_arr[i])
-    print(calib_plausibility_score_arr[i])
-    print('----------------------------')
-#Save Data Arrays
-torch.save(calib_plausibility_score_arr, RESULTS_DIRECTORY / "calib_plausibility_score_arr")
-torch.save(calib_sim_score_arr, RESULTS_DIRECTORY / "calib_sim_score_arr")
-torch.save(calib_true_class_arr, RESULTS_DIRECTORY / "calib_true_class_arr")
+if not CALIB_RELOAD:
+    print("Skipping Generating Calibration Matrices")
+else:
+    print("Generating Calibration Matrices")
+    calib_true_class_arr = []
+    calib_sim_score_arr = []
+    calib_plausibility_score_arr = []
+    #Loop through image
+    for label in os.listdir(IMAGE_PLAUSIBILITIES):
+        print("Beginning Calibration Embedding Generation: {label}".format(label=label))
+        avg = torch.zeros(len(LABELS.items())+1)
+        num_images = 0
+        for plaus in os.listdir(IMAGE_PLAUSIBILITIES / label):
+            # Retrieve plausibilities array
+            if not 'plausibilities' in plaus: continue
+            try: 
+                plausibility_arr = torch.load(IMAGE_PLAUSIBILITIES / label / plaus)
+                if not torch.all(torch.isnan(plausibility_arr)==False):
+                    print('ERROR')
+                image = Image.open(CALIB_IMAGE_DIRECTORY / label / (plaus.split('_')[0]+'.jpeg'))
+            except:
+                print("Error")
+                continue
+            # Build label array
+            class_onehot = torch.zeros(len(LABELS.items()))
+            class_onehot[int(label)] = 1
+            # Build similarity array
+            image_logit = openclip_image_preprocess(image)
+            label_probs = openclip_process(image_logit, label_logits)
+            # Append to matrices
+            calib_true_class_arr.append(class_onehot)
+            calib_sim_score_arr.append(label_probs)
+            calib_plausibility_score_arr.append(plausibility_arr)
+            # Update metrics
+            avg = avg + plausibility_arr
+            num_images += 1
+            if num_images >= NUM_SAMPLES: break
+        avg = avg/len(os.listdir(CALIB_IMAGE_DIRECTORY / label))
+    #Append Matrices
+    calib_true_class_arr = torch.vstack(calib_true_class_arr)
+    calib_sim_score_arr = torch.vstack(calib_sim_score_arr)
+    calib_plausibility_score_arr = torch.vstack(calib_plausibility_score_arr)
+    #Save Data Arrays
+    torch.save(calib_plausibility_score_arr, RESULTS_DIRECTORY / "calib_plausibility_score_arr")
+    torch.save(calib_sim_score_arr, RESULTS_DIRECTORY / "calib_sim_score_arr")
+    torch.save(calib_true_class_arr, RESULTS_DIRECTORY / "calib_true_class_arr")
 #Generate Test Matrices
 #-----------------------------------------------------------------------------------
 if not TEST_RELOAD:
@@ -201,16 +204,24 @@ else:
     #Loop through image
     for label in os.listdir(TEST_IMAGE_DIRECTORY):
         print("Beginning Test Embedding Generation: {label}".format(label=label))
+        num_images = 0
         for img in os.listdir(TEST_IMAGE_DIRECTORY / label):
             # Build label array
             class_onehot = torch.zeros(len(LABELS.items()))
-            class_onehot[int(label)] = 1
-            test_true_class_arr.append(class_onehot)
+            label_int = str(int(label.split('.')[0])-1)
+            class_onehot[int(label_int)] = 1
             # Build similarity array
-            image = Image.open(TEST_IMAGE_DIRECTORY / label / img)
+            try:
+                image = Image.open(TEST_IMAGE_DIRECTORY / label / img)
+            except:
+                print("IMG load error:", img)
+                continue
             image_logit = openclip_image_preprocess(image)
             label_probs = openclip_process(image_logit, label_logits)
+            test_true_class_arr.append(class_onehot)
             test_sim_score_arr.append(label_probs)
+            num_images += 1
+            if num_images >= NUM_SAMPLES: break
     #Append Matrices
     test_true_class_arr = torch.vstack(test_true_class_arr)
     test_sim_score_arr = torch.vstack(test_sim_score_arr)
@@ -220,6 +231,9 @@ else:
 
 #Perform Conformal Prediction
 #-----------------------------------------------------------------------------------
+calib_plausibility_score_arr =  torch.load(RESULTS_DIRECTORY / "calib_plausibility_score_arr")
+calib_sim_score_arr = torch.load(RESULTS_DIRECTORY / "calib_sim_score_arr")
+calib_true_class_arr = torch.load(RESULTS_DIRECTORY / "calib_true_class_arr")
 test_sim_score_arr = torch.load(RESULTS_DIRECTORY / "test_sim_score_arr")
 test_true_class_arr = torch.load(RESULTS_DIRECTORY / "test_true_class_arr")
 print("Performing Conformal Prediction")

@@ -1,0 +1,1001 @@
+Class Index,Class
+0,teleost fish
+1,teleost fish
+2,cartilaginous fish
+3,cartilaginous fish
+4,fish
+5,fish
+6,fish
+7,animal
+8,animal
+9,chordate
+10,bird
+11,bird
+12,bird
+13,bird
+14,passerine
+15,bird
+16,passerine
+17,bird
+18,bird
+19,bird
+20,vertebrate
+21,vertebrate
+22,vertebrate
+23,chordate
+24,vertebrate
+25,chordate
+26,vertebrate
+27,vertebrate
+28,vertebrate
+29,vertebrate
+30,vertebrate
+31,chordate
+32,chordate
+33,anapsid
+34,anapsid
+35,reptile
+36,reptile
+37,reptile
+38,diapsid
+39,diapsid
+40,diapsid
+41,diapsid
+42,diapsid
+43,diapsid
+44,diapsid
+45,diapsid
+46,diapsid
+47,diapsid
+48,diapsid
+49,reptile
+50,reptile
+51,archosaur
+52,reptile
+53,reptile
+54,reptile
+55,reptile
+56,reptile
+57,reptile
+58,reptile
+59,reptile
+60,reptile
+61,diapsid
+62,snake
+63,diapsid
+64,snake
+65,vertebrate
+66,reptile
+67,snake
+68,snake
+69,organism
+70,animal
+71,animal
+72,invertebrate
+73,invertebrate
+74,invertebrate
+75,invertebrate
+76,invertebrate
+77,invertebrate
+78,invertebrate
+79,organism
+80,bird
+81,bird
+82,bird
+83,bird
+84,game bird
+85,bird
+86,bird
+87,chordate
+88,chordate
+89,vertebrate
+90,vertebrate
+91,vertebrate
+92,chordate
+93,chordate
+94,chordate
+95,chordate
+96,chordate
+97,aquatic bird
+98,anseriform bird
+99,bird
+100,vertebrate
+101,animal
+102,vertebrate
+103,vertebrate
+104,mammal
+105,mammal
+106,vertebrate
+107,organism
+108,animal
+109,coelenterate
+110,organism
+111,organism
+112,animal
+113,animal
+114,animal
+115,animal
+116,organism
+117,animal
+118,arthropod
+119,arthropod
+120,arthropod
+121,arthropod
+122,crustacean
+123,arthropod
+124,invertebrate
+125,invertebrate
+126,invertebrate
+127,bird
+128,bird
+129,vertebrate
+130,vertebrate
+131,bird
+132,aquatic bird
+133,bird
+134,vertebrate
+135,vertebrate
+136,bird
+137,aquatic bird
+138,vertebrate
+139,wading bird
+140,aquatic bird
+141,aquatic bird
+142,aquatic bird
+143,bird
+144,bird
+145,aquatic bird
+146,bird
+147,aquatic mammal
+148,cetacean
+149,mammal
+150,aquatic mammal
+151,carnivore
+152,carnivore
+153,carnivore
+154,carnivore
+155,carnivore
+156,dog
+157,canine
+158,carnivore
+159,carnivore
+160,canine
+161,canine
+162,canine
+163,canine
+164,canine
+165,dog
+166,dog
+167,dog
+168,canine
+169,dog
+170,dog
+171,dog
+172,dog
+173,canine
+174,canine
+175,canine
+176,canine
+177,canine
+178,canine
+179,dog
+180,dog
+181,canine
+182,canine
+183,canine
+184,canine
+185,canine
+186,canine
+187,canine
+188,dog
+189,dog
+190,hunting dog
+191,canine
+192,canine
+193,canine
+194,canine
+195,canine
+196,dog
+197,dog
+198,dog
+199,canine
+200,canine
+201,canine
+202,canine
+203,canine
+204,canine
+205,dog
+206,dog
+207,dog
+208,dog
+209,dog
+210,dog
+211,dog
+212,dog
+213,dog
+214,dog
+215,dog
+216,dog
+217,hunting dog
+218,hunting dog
+219,dog
+220,dog
+221,hunting dog
+222,canine
+223,canine
+224,dog
+225,dog
+226,canine
+227,canine
+228,canine
+229,canine
+230,canine
+231,canine
+232,canine
+233,canine
+234,canine
+235,canine
+236,dog
+237,dog
+238,canine
+239,canine
+240,canine
+241,canine
+242,carnivore
+243,carnivore
+244,canine
+245,canine
+246,carnivore
+247,carnivore
+248,carnivore
+249,canine
+250,canine
+251,placental
+252,dog
+253,placental
+254,placental
+255,placental
+256,placental
+257,placental
+258,carnivore
+259,carnivore
+260,carnivore
+261,carnivore
+262,carnivore
+263,carnivore
+264,carnivore
+265,carnivore
+266,carnivore
+267,carnivore
+268,placental
+269,placental
+270,placental
+271,placental
+272,placental
+273,placental
+274,placental
+275,placental
+276,mammal
+277,placental
+278,placental
+279,placental
+280,placental
+281,carnivore
+282,carnivore
+283,carnivore
+284,carnivore
+285,carnivore
+286,carnivore
+287,carnivore
+288,placental
+289,placental
+290,placental
+291,placental
+292,placental
+293,placental
+294,mammal
+295,mammal
+296,mammal
+297,mammal
+298,mammal
+299,mammal
+300,invertebrate
+301,invertebrate
+302,invertebrate
+303,invertebrate
+304,invertebrate
+305,insect
+306,insect
+307,invertebrate
+308,invertebrate
+309,invertebrate
+310,invertebrate
+311,invertebrate
+312,invertebrate
+313,invertebrate
+314,invertebrate
+315,invertebrate
+316,invertebrate
+317,invertebrate
+318,invertebrate
+319,invertebrate
+320,invertebrate
+321,insect
+322,arthropod
+323,insect
+324,insect
+325,arthropod
+326,arthropod
+327,organism
+328,organism
+329,organism
+330,placental
+331,mammal
+332,placental
+333,vertebrate
+334,vertebrate
+335,placental
+336,vertebrate
+337,vertebrate
+338,mammal
+339,ungulate
+340,placental
+341,placental
+342,placental
+343,placental
+344,mammal
+345,ruminant
+346,even-toed ungulate
+347,ungulate
+348,even-toed ungulate
+349,ruminant
+350,ruminant
+351,even-toed ungulate
+352,even-toed ungulate
+353,even-toed ungulate
+354,placental
+355,mammal
+356,mammal
+357,mammal
+358,mammal
+359,mammal
+360,mammal
+361,mammal
+362,mammal
+363,vertebrate
+364,mammal
+365,primate
+366,primate
+367,primate
+368,primate
+369,primate
+370,placental
+371,placental
+372,placental
+373,placental
+374,placental
+375,placental
+376,placental
+377,placental
+378,placental
+379,placental
+380,placental
+381,placental
+382,placental
+383,mammal
+384,mammal
+385,mammal
+386,mammal
+387,mammal
+388,mammal
+389,vertebrate
+390,fish
+391,aquatic vertebrate
+392,teleost fish
+393,teleost fish
+394,fish
+395,fish
+396,teleost fish
+397,bony fish
+398,instrumentality
+399,consumer goods
+400,consumer goods
+401,device
+402,device
+403,conveyance
+404,craft
+405,vehicle
+406,artifact
+407,wheeled vehicle
+408,vehicle
+409,instrument
+410,structure
+411,commodity
+412,artifact
+413,autoloader
+414,artifact
+415,establishment
+416,instrumentality
+417,vehicle
+418,instrumentality
+419,cloth covering
+420,instrumentality
+421,artifact
+422,instrumentality
+423,furnishing
+424,establishment
+425,artifact
+426,instrumentality
+427,artifact
+428,conveyance
+429,instrumentality
+430,instrumentality
+431,instrumentality
+432,wind instrument
+433,consumer goods
+434,drygoods
+435,artifact
+436,wheeled vehicle
+437,artifact
+438,instrumentality
+439,consumer goods
+440,instrumentality
+441,artifact
+442,artifact
+443,artifact
+444,conveyance
+445,consumer goods
+446,artifact
+447,instrumentality
+448,artifact
+449,structure
+450,instrumentality
+451,clothing
+452,consumer goods
+453,artifact
+454,establishment
+455,artifact
+456,instrumentality
+457,clothing
+458,artifact
+459,commodity
+460,artifact
+461,protective covering
+462,artifact
+463,artifact
+464,instrumentality
+465,consumer goods
+466,conveyance
+467,establishment
+468,wheeled vehicle
+469,instrumentality
+470,instrumentality
+471,device
+472,craft
+473,implement
+474,consumer goods
+475,instrumentality
+476,device
+477,instrumentality
+478,artifact
+479,mechanism
+480,artifact
+481,artifact
+482,artifact
+483,artifact
+484,craft
+485,artifact
+486,device
+487,equipment
+488,instrumentality
+489,structure
+490,covering
+491,implement
+492,artifact
+493,instrumentality
+494,instrumentality
+495,instrumentality
+496,clothing
+497,artifact
+498,artifact
+499,cutting implement
+500,artifact
+501,consumer goods
+502,artifact
+503,artifact
+504,container
+505,instrumentality
+506,artifact
+507,device
+508,equipment
+509,establishment
+510,craft
+511,wheeled vehicle
+512,tool
+513,device
+514,artifact
+515,consumer goods
+516,instrumentality
+517,artifact
+518,consumer goods
+519,artifact
+520,instrumentality
+521,utensil
+522,instrumentality
+523,instrumentality
+524,covering
+525,artifact
+526,instrumentality
+527,machine
+528,instrumentality
+529,commodity
+530,instrument
+531,instrument
+532,instrumentality
+533,artifact
+534,durables
+535,restraint
+536,artifact
+537,instrumentality
+538,artifact
+539,artifact
+540,equipment
+541,instrumentality
+542,artifact
+543,instrumentality
+544,appliance
+545,artifact
+546,device
+547,vehicle
+548,instrumentality
+549,artifact
+550,appliance
+551,instrumentality
+552,consumer goods
+553,instrumentality
+554,vehicle
+555,wheeled vehicle
+556,artifact
+557,instrumentality
+558,device
+559,furnishing
+560,consumer goods
+561,conveyance
+562,artifact
+563,instrumentality
+564,furnishing
+565,conveyance
+566,device
+567,utensil
+568,clothing
+569,wheeled vehicle
+570,artifact
+571,device
+572,artifact
+573,vehicle
+574,instrumentality
+575,vehicle
+576,vehicle
+577,instrumentality
+578,consumer goods
+579,device
+580,artifact
+581,structure
+582,establishment
+583,instrumentality
+584,device
+585,artifact
+586,vehicle
+587,instrumentality
+588,artifact
+589,consumer goods
+590,computer
+591,artifact
+592,instrumentality
+593,device
+594,device
+595,instrumentality
+596,cutting implement
+597,artifact
+598,artifact
+599,artifact
+600,instrumentality
+601,consumer goods
+602,instrumentality
+603,vehicle
+604,instrument
+605,system
+606,consumer goods
+607,device
+608,consumer goods
+609,wheeled vehicle
+610,consumer goods
+611,equipment
+612,vehicle
+613,equipment
+614,consumer goods
+615,commodity
+616,instrumentality
+617,clothing
+618,artifact
+619,artifact
+620,computer
+621,instrumentality
+622,artifact
+623,cutting implement
+624,artifact
+625,craft
+626,artifact
+627,wheeled vehicle
+628,craft
+629,instrumentality
+630,artifact
+631,artifact
+632,device
+633,magnifier
+634,structure
+635,device
+636,artifact
+637,artifact
+638,clothing
+639,consumer goods
+640,artifact
+641,instrumentality
+642,instrumentality
+643,consumer goods
+644,artifact
+645,support
+646,artifact
+647,artifact
+648,instrumentality
+649,artifact
+650,device
+651,durables
+652,commodity
+653,artifact
+654,instrumentality
+655,consumer goods
+656,motor vehicle
+657,instrumentality
+658,consumer goods
+659,tableware
+660,artifact
+661,wheeled vehicle
+662,artifact
+663,dwelling
+664,artifact
+665,self-propelled vehicle
+666,artifact
+667,consumer goods
+668,artifact
+669,artifact
+670,instrumentality
+671,conveyance
+672,artifact
+673,artifact
+674,artifact
+675,self-propelled vehicle
+676,artifact
+677,instrumentality
+678,instrumentality
+679,artifact
+680,artifact
+681,computer
+682,artifact
+683,wind instrument
+684,instrumentality
+685,device
+686,artifact
+687,instrumentality
+688,artifact
+689,consumer goods
+690,vehicle
+691,artifact
+692,artifact
+693,artifact
+694,mechanism
+695,device
+696,artifact
+697,commodity
+698,housing
+699,device
+700,artifact
+701,artifact
+702,instrumentality
+703,furnishing
+704,instrument
+705,conveyance
+706,artifact
+707,instrumentality
+708,artifact
+709,artifact
+710,artifact
+711,artifact
+712,ware
+713,instrumentality
+714,artifact
+715,shield
+716,structure
+717,wheeled vehicle
+718,artifact
+719,artifact
+720,instrumentality
+721,artifact
+722,instrumentality
+723,mechanism
+724,vehicle
+725,artifact
+726,instrumentality
+727,artifact
+728,artifact
+729,structure
+730,artifact
+731,instrumentality
+732,instrumentality
+733,artifact
+734,self-propelled vehicle
+735,clothing
+736,instrumentality
+737,instrumentality
+738,artifact
+739,mechanism
+740,instrumentality
+741,artifact
+742,instrumentality
+743,establishment
+744,instrumentality
+745,instrumentality
+746,artifact
+747,instrumentality
+748,artifact
+749,instrumentality
+750,artifact
+751,wheeled vehicle
+752,artifact
+753,artifact
+754,artifact
+755,scientific instrument
+756,artifact
+757,conveyance
+758,device
+759,instrumentality
+760,durables
+761,artifact
+762,artifact
+763,weapon
+764,instrument
+765,furnishing
+766,appliance
+767,artifact
+768,instrumentality
+769,device
+770,artifact
+771,instrumentality
+772,device
+773,artifact
+774,artifact
+775,consumer goods
+776,wind instrument
+777,artifact
+778,instrumentality
+779,instrumentality
+780,vehicle
+781,artifact
+782,instrumentality
+783,instrumentality
+784,instrumentality
+785,clothing
+786,consumer goods
+787,artifact
+788,establishment
+789,artifact
+790,artifact
+791,conveyance
+792,instrumentality
+793,consumer goods
+794,covering
+795,artifact
+796,covering
+797,artifact
+798,device
+799,obstruction
+800,instrumentality
+801,artifact
+802,vehicle
+803,vehicle
+804,artifact
+805,instrumentality
+806,consumer goods
+807,artifact
+808,consumer goods
+809,tableware
+810,implement
+811,artifact
+812,conveyance
+813,utensil
+814,craft
+815,instrumentality
+816,artifact
+817,wheeled vehicle
+818,instrumentality
+819,artifact
+820,vehicle
+821,artifact
+822,instrumentality
+823,instrumentality
+824,consumer goods
+825,structure
+826,instrument
+827,artifact
+828,artifact
+829,conveyance
+830,artifact
+831,furniture
+832,structure
+833,vehicle
+834,commodity
+835,device
+836,device
+837,device
+838,artifact
+839,artifact
+840,artifact
+841,clothing
+842,consumer goods
+843,artifact
+844,instrumentality
+845,instrumentality
+846,instrumentality
+847,vehicle
+848,artifact
+849,instrumentality
+850,artifact
+851,instrumentality
+852,instrumentality
+853,artifact
+854,covering
+855,artifact
+856,instrumentality
+857,furniture
+858,artifact
+859,durables
+860,establishment
+861,instrumentality
+862,instrumentality
+863,artifact
+864,wheeled vehicle
+865,establishment
+866,conveyance
+867,wheeled vehicle
+868,artifact
+869,garment
+870,instrumentality
+871,craft
+872,instrumentality
+873,artifact
+874,instrumentality
+875,device
+876,artifact
+877,obstruction
+878,artifact
+879,covering
+880,instrumentality
+881,device
+882,consumer goods
+883,instrumentality
+884,artifact
+885,artifact
+886,instrumentality
+887,consumer goods
+888,artifact
+889,device
+890,instrumentality
+891,durables
+892,instrument
+893,artifact
+894,artifact
+895,instrumentality
+896,instrumentality
+897,durables
+898,instrumentality
+899,container
+900,container
+901,container
+902,artifact
+903,consumer goods
+904,artifact
+905,covering
+906,clothing
+907,instrumentality
+908,artifact
+909,utensil
+910,ware
+911,artifact
+912,obstruction
+913,vehicle
+914,craft
+915,artifact
+916,instrumentality
+917,product
+918,equipment
+919,street sign
+920,traffic light
+921,artifact
+922,menu
+923,artifact
+924,dip
+925,nutriment
+926,nutriment
+927,nutriment
+928,nutriment
+929,nutriment
+930,french loaf
+931,bun
+932,pretzel
+933,sandwich
+934,sandwich
+935,vegetable
+936,vegetable
+937,vegetable
+938,vegetable
+939,vegetable
+940,vegetable
+941,vegetable
+942,vegetable
+943,vegetable
+944,vegetable
+945,vegetable
+946,vegetable
+947,vegetable
+948,fruit
+949,plant reproductive structure
+950,plant reproductive structure
+951,plant reproductive structure
+952,plant organ
+953,plant organ
+954,plant organ
+955,plant organ
+956,plant organ
+957,plant organ
+958,feed
+959,carbonara
+960,sauce
+961,foodstuff
+962,nutriment
+963,nutriment
+964,nutriment
+965,nutriment
+966,beverage
+967,beverage
+968,beverage
+969,beverage
+970,geological formation
+971,bubble
+972,geological formation
+973,geological formation
+974,geological formation
+975,geological formation
+976,geological formation
+977,natural object
+978,geological formation
+979,geological formation
+980,geological formation
+981,organism
+982,person
+983,organism
+984,plant reproductive structure
+985,vascular plant
+986,angiosperm
+987,fruit
+988,plant part
+989,plant part
+990,plant organ
+991,organism
+992,organism
+993,organism
+994,organism
+995,organism
+996,organism
+997,organism
+998,plant part
+999,toilet tissue

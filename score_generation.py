@@ -43,7 +43,7 @@ if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets")
     DATASET = 'OxfordPets'
-if True:
+if False:
     CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k")
@@ -52,7 +52,7 @@ if False:
     CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
     DATASET = 'MedMNIST'
-if False:
+if True:
     CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet")
@@ -110,7 +110,7 @@ for label in os.listdir(CONTEXT_DIRECTORY):
         main_score = torch.tensor(main_score)
         # Second Score
         second_score = []
-        second_search = captions[0:]
+        second_search = captions[0:min(10, len(captions))]
         label_set = list(set(PSEUDO_LABELS.values()))
         for caption in second_search:
             label_set = label_set + [labels[int(label)]]
@@ -121,5 +121,6 @@ for label in os.listdir(CONTEXT_DIRECTORY):
         second_score = torch.stack(second_score)
         torch.save(main_score, IMAGE_PLAUSIBILITIES / label / (file.split(".")[0] + '_main'))
         torch.save(second_score, IMAGE_PLAUSIBILITIES / label / (file.split(".")[0] + '_second'))
+        print('a')
         n += 1
         if n >= 10: break
