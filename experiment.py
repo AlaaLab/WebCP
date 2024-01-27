@@ -11,7 +11,7 @@ import json
 import open_clip
 from transformers import AutoTokenizer, CLIPTextModelWithProjection, CLIPModel, CLIPProcessor
 import argparse
-
+import random
 script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
 base_path = script_path.parent.absolute()
 sys.path.append(base_path / 'cp')
@@ -40,13 +40,14 @@ RESULTS_DIRECTORY = config["results_data_directory"]
 CLASSIFICATION_CHECKPOINT = config["classification_checkpoint"]'''
 
 ALPHA = 0.1
-NUM_SAMPLES = 1000
+NUM_SAMPLES = 10
 USE_SOFTMAX = True
 LOGIT_SCALE = 100.0 if USE_SOFTMAX else 1.0
 
 MODEL_ID = "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" #"hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
-TEST_RELOAD = False
-CALIB_RELOAD =  True
+TEST_RELOAD = True
+CALIB_RELOAD =  False
+GENERATE_DEBUG_CSV = True
 
 if False:
     TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-pets\\oxford-pets")
@@ -73,10 +74,10 @@ if False:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
     dataset =  'ImageNet'
 if True:
-    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\256_ObjectCategories")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
+    TEST_IMAGE_DIRECTORY = Path("/home/hwei/reesearch/datasets/256_ObjectCategories")
+    IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size")
+    RESULTS_DIRECTORY = Path("/home/hwei/reesearch/experiments/google-caltech256_01-17-24_1")
     dataset =  'Caltech256'
 
 if dataset == 'MedMNIST':
@@ -92,6 +93,20 @@ elif dataset == 'Caltech256':
 else:
     LABELS = None
 
+
+if GENERATE_DEBUG_CSV: 
+    CALIB_DEBUG_CSV_PATH = Path("~/reesearch/debug.csv")
+    calib_debug_df = pd.read_csv(CALIB_DEBUG_CSV_PATH).set_index("index")
+    calib_debug_df['clip_score_label'] = -1.0
+    for i in range(len(LABELS)):
+        calib_debug_df[f'clip_score_{i}'] = -1.0
+
+    CALIB_OUTPUT_CSV_PATH = Path("~/reesearch/debug_clip.csv")
+
+    TEST_DEBUG_CSV_PATH = Path("~/reesearch/debug_test.csv")
+    test_debug_keys = ["index", "label", "filename", "clip_score_label"] + [f"clip_score_{i}" for i in range(len(LABELS))]
+    test_debug_dict = {k: [] for k in test_debug_keys}
+    # test_debug_dict = pd.read_csv(TEST_DEBUG_CSV_PATH)    
 #Model Methods
 #-----------------------------------------------------------------------------------
 def openclip_image_preprocess(image):
@@ -176,6 +191,10 @@ else:
             # Build similarity array
             image_logit = openclip_image_preprocess(image)
             label_probs = openclip_process(image_logit, label_logits)
+            if GENERATE_DEBUG_CSV:
+                for i in range(len(LABELS)):
+                    calib_debug_df.loc[f'{int(label)},{plaus.split("_")[0]}', f'clip_score_{i}'] = label_probs[i].numpy()
+                calib_debug_df.loc[f'{int(label)},{plaus.split("_")[0]}', f'clip_score_label'] = label_probs[int(label)].numpy()
             # Append to matrices
             calib_true_class_arr.append(class_onehot)
             calib_sim_score_arr.append(label_probs)
@@ -193,6 +212,8 @@ else:
     torch.save(calib_plausibility_score_arr, RESULTS_DIRECTORY / "calib_plausibility_score_arr")
     torch.save(calib_sim_score_arr, RESULTS_DIRECTORY / "calib_sim_score_arr")
     torch.save(calib_true_class_arr, RESULTS_DIRECTORY / "calib_true_class_arr")
+    if GENERATE_DEBUG_CSV:
+        calib_debug_df.to_csv(CALIB_OUTPUT_CSV_PATH)
 #Generate Test Matrices
 #-----------------------------------------------------------------------------------
 if not TEST_RELOAD:
@@ -205,7 +226,9 @@ else:
     for label in os.listdir(TEST_IMAGE_DIRECTORY):
         print("Beginning Test Embedding Generation: {label}".format(label=label))
         num_images = 0
-        for img in os.listdir(TEST_IMAGE_DIRECTORY / label):
+        test_image_list = list(os.listdir(TEST_IMAGE_DIRECTORY / label))
+        random.shuffle(test_image_list)
+        for img in test_image_list:
             # Build label array
             class_onehot = torch.zeros(len(LABELS.items()))
             label_int = str(int(label.split('.')[0])-1)
@@ -220,6 +243,15 @@ else:
             label_probs = openclip_process(image_logit, label_logits)
             test_true_class_arr.append(class_onehot)
             test_sim_score_arr.append(label_probs)
+
+            if GENERATE_DEBUG_CSV:
+                test_debug_dict["filename"].append(str(img))
+                test_debug_dict["label"].append(str(label_int))
+                test_debug_dict["index"].append(f"{str(label_int)},{str(img)}")
+                test_debug_dict["clip_score_label"].append(label_probs[int(label_int)].numpy())
+                for i in range(len(LABELS)):
+                    test_debug_dict[f"clip_score_{i}"].append(label_probs[i].numpy())
+
             num_images += 1
             if num_images >= NUM_SAMPLES: break
     #Append Matrices
@@ -228,6 +260,9 @@ else:
     #Save Data Arrays
     torch.save(test_sim_score_arr, RESULTS_DIRECTORY / "test_sim_score_arr")
     torch.save(test_true_class_arr, RESULTS_DIRECTORY / "test_true_class_arr")
+
+    if GENERATE_DEBUG_CSV:
+        pd.DataFrame(test_debug_dict).set_index("index").sort_values(["label", "index"]).to_csv(TEST_DEBUG_CSV_PATH)
 
 #Perform Conformal Prediction
 #-----------------------------------------------------------------------------------
