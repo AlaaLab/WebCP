@@ -1,0 +1,42 @@
+# global
+class_list_csv: "utils/cifar100_class.csv"
+
+# data mining (step 1)
+scraping_store_dir: "/home/hwei/reesearch/datasets/flickr_web_scraping_0224_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_cifar-100_25size"
+num_threads: 6 # the number of concurrent threads per worker process if not using selenium; the number of selenium scraping instances if using selenium.
+set_size: 30 # the number of calibration examples targeted to be scraped, after skipping errors. 
+max_dim_size: 600 # each scraped image will be scaled proportionally such that its largest dimension will be of this size.
+class_id_start: null # if scraping crashed, this can be used to specify which class ID to resume from. set null if desired to start at 0.
+class_id_end: null # similar purpose as class_id_start, but now to specify which class ID to end at. set null if desired to end at the "maximum" class ID. 
+class_id_exclude_list: [] # similar purpose as class_id_start and class_id_end, but used to specify which class IDs to skip. leave empty if not used. 
+use_webpage_context: False
+reverse_image_store_dir: "/home/hwei/reesearch/datasets/flickr_web_scraping_0224_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_cifar-100_25size_caption-results"
+num_similar_captions: 15
+num_selenium_threads: 12
+# web_detection_store_dir: "/home/hwei/reesearch/datasets/web_scraping_1225_google-hybrid_web-detection_medmnist_50size_web_detection"
+# context generation (step 2) 
+# context_alignment_store_dir: # CHANGE THIS directory to store results of context alignment generation.
+max_tokens: 512 # maximum number of tokens compatible with query or context encoders, see below.
+token_window_length: 256 # specifies length of window. the minimum is taken between tokens and sentences.
+sentence_window_length: 10 # specifies length of window. the minimum is taken between tokens and sentences. 
+
+tokenizer: # which tokenizer model to use?
+  path: &tokenizer_path "sentence-transformers/msmarco-bert-base-dot-v5" # append after this the specific HuggingFace tokenizer to use, e.g. "sentence-transformers/msmarc-bert-base-dot-v5".
+  kwargs: {} # other args
+
+query_encoder: # which model to use for encoding the class name?
+  path: *tokenizer_path # leave like this if the path is the same as config['tokenizer']['path']; otherwise, specify the HuggingFace path if different.
+  kwargs: {} # other args
+
+context_encoder: # which model to use for encoding the metadata?
+  path: *tokenizer_path # leave like this if the path is the same as config['tokenizer']['path']; otherwise, specify the HuggingFace path if different.
+  kwargs: {} # other args
+
+# content generation, plausibility score generation, ambiguous CP, and analysis (steps after 3)
+# preprocess_image_store_dir: #indicates where to store preprocessed images. 
+# plausibility_store_dir: # indicates where to store final plausibilities.
+# test_image_dir: # for analysis.py and experiment.py, where the directory of test images is. 
+# plausibility_checkpoint: "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" # specify the huggingface model for computing content alignments. 
+# classification_checkpoint: "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224" # specify the huggingface model for running predictions (the actual task).
+# results_store_dir: #indicates where to store results of experiment.py
+# chart_output_dir: #indicates where to store resulting charts of analysis.py

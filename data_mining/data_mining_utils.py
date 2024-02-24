@@ -8,7 +8,33 @@ import os
 import pickle
 from pathlib import Path
 import traceback
+def process_image_caption(ls, config, headers, logger):
+    image_file_dir, caption_file_dir, image_url, caption = ls
 
+    if image_url is None:
+        logger.warn(f"image url is none; image {image_file_dir}, caption {caption}")
+        return
+    try:
+        response = requests.get(image_url, headers=headers, timeout=(5, 5), stream=True)
+        img = Image.open(BytesIO(response.content))
+
+        old_width, old_height = img.size
+
+        ratio = max(old_width, old_height) / config['max_dim_size']
+        new_width, new_height = int(old_width / ratio), int(old_height / ratio)
+
+        if img.mode in ("RGBA", "P"):
+            img = img.convert("RGB")
+
+        img = img.resize((new_width, new_height))
+        img.save(image_file_dir, "jpeg", quality=95)
+
+        with open(caption_file_dir, "w") as caption_file:
+            caption_file.write(str(caption))
+    except Exception as e:
+        logger.warn(traceback.format_exc())
+        image_file_dir.unlink(missing_ok=True)
+        caption_file_dir.unlink(missing_ok=True)
 
 def process_image(ls, config, headers):
     file_dir, image_url_dir, url = ls
