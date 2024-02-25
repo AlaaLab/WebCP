@@ -16,7 +16,7 @@ def get_fileidx_list(dataset_subfolder):
     for filePath in dataset_subfolder.iterdir():
         if (filePath.is_dir()):
             continue
-        first = str(filePath).rindex("\\")+1
+        first = str(filePath).rindex("/")+1
         last = str(filePath).rindex(".")
         fileIdx = int(str(str(filePath)[first:last]))
         idxSet.add(fileIdx)

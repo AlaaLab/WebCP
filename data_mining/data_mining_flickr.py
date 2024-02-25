@@ -99,7 +99,9 @@ if __name__ == "__main__":
         cnt = 0
         while cnt < len(request_list):
             class_id, class_name = request_list[cnt]
-
+            # if (class_id not in [824, 975, 577, 181, 602]):
+            #     cnt += 1
+            #     continue
             data = np.empty(1, dtype='i')
             comm.Recv([data, MPI.INT], source=MPI.ANY_SOURCE, tag=0)
 
