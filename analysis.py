@@ -49,20 +49,32 @@ reader = open(base_path + "\\experiment_configs\\"  + args.exp)
 config = json.load(reader)'''
 
 if False:
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
-    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_owlvit")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_flava")
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_clipa")
 if False:
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
-    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_owlvit")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_flava")
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_clipa")
 if False:
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
-    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
-if False:
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
-    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-14-24_1")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_owlvit")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_flava")
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_clipa")
 if True:
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
-    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_02-20-24_1")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_owlvit")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_flava")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_clipa")
+if False:
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_owlvit")
+    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experimenpythts\\google-caltech256_01-17-24_flava")
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_clipa")
+
+OUTPUT_RESULT_DIR = RESULTS_DIRECTORY
 
 CALIB_SIZE_CURVE = False
 ALPHA_CURVE = False
@@ -91,7 +103,7 @@ if ORACLE:
     oracle_metrics = []
     norm_metrics = []
     amb_metrics = []
-    alpha_values = [0.01] + [0.05*i for i in range(1, 5)] + [0.1*i for i in range(3, 10)] + [0.99]
+    alpha_values = [0.01] + [0.05*i for i in range(1, 5)] + [0.1*i for i in range(3, 10)]# + [0.95]
     print(alpha_values)
     # Generate numpy matrices
     calib_sim_score_arr_np = calib_sim_score_arr.detach().cpu().numpy()
@@ -112,9 +124,12 @@ if ORACLE:
     for alpha in alpha_values:
         #Perform Conformal Prediction
         print("Performing Conformal Prediction")
-        threshold_amb = monte_carlo_cp(calib_sim_score_arr[:calib_length], calib_plausibility_score_arr[:calib_length], alpha, NUM_SAMPLES)
+        threshold_amb = monte_carlo_cp_eff(calib_sim_score_arr[:calib_length], calib_plausibility_score_arr[:calib_length], alpha, NUM_SAMPLES)
         threshold_oracle = compute_threshold(alpha, test_sim_score_arr_np[:calib_length], test_true_class_arr_np[:calib_length])
         threshold_norm = compute_threshold(alpha, calib_sim_score_arr_np[:calib_length], calib_true_class_arr_np[:calib_length])
+        print(threshold_oracle)
+        print(threshold_norm)
+        print(threshold_amb)
         #Output Metrics
         print("\nAlpha Value: {alpha}".format(alpha = alpha))
         print("Normal CP:")
@@ -139,30 +154,37 @@ if ORACLE:
     eff_oracle = [oracle_metrics[i][3] for i in range(0, len(oracle_metrics))]
     raw_data = {"alpha_values": alpha_values, "delta_norm": delta_norm, "delta_amb": delta_amb, "delta_oracle": delta_oracle, "eff_norm": eff_norm, "eff_amb": eff_amb, "eff_oracle": eff_oracle}
     #with open(OUTPUT_RESULT_DIR / "Method_Comparison.pkl", 'wb') as f: pickle.dump(raw_data, f)
-    print([oracle_metrics[i][0] for i in range(0, len(oracle_metrics))])
-    print([oracle_metrics[i][1] for i in range(0, len(oracle_metrics))])
+    print("Oracle Results")
     print([oracle_metrics[i][2] for i in range(0, len(oracle_metrics))])
     print([oracle_metrics[i][3] for i in range(0, len(oracle_metrics))])
+    print("Normal Results")
+    print([norm_metrics[i][2] for i in range(0, len(norm_metrics))])
+    print([norm_metrics[i][3] for i in range(0, len(norm_metrics))])
+    print("WebCP Results")
+    print([amb_metrics[i][2] for i in range(0, len(amb_metrics))])
+    print([amb_metrics[i][3] for i in range(0, len(amb_metrics))])
     print(delta_oracle)
     # Generate Plots
     #plt.plot(alpha_values, delta_norm, color='blue', label='normal')
     #plt.plot(alpha_values, delta_amb, color='red', label = 'ambiguous')
     #plt.plot(alpha_values, delta_oracle, color='green', label = 'oracle')
+    alpha_values = [1-val for val in alpha_values]
+    plt.rcParams.update({'font.size': 14})
     plt.plot(alpha_values, norm, color='blue', label='Normal CP')
-    plt.plot(alpha_values, amb, color='red', label = 'CP w/ Ambiguous Ground Truth')
+    plt.plot(alpha_values, amb, color='red', label = 'WebCP')
     plt.plot(alpha_values, oracle, color='purple', label = 'Oracle CP')
     plt.plot(alpha_values, target, color='green', label = 'Target Coverage')
     plt.axhline(y = 0.0, color = 'grey', linestyle = '-')
     plt.title(u'Target v. Test Coverage')
     plt.xlabel(u'Target Coverage')
-    plt.xticks(alpha_values)
+    #plt.xticks(alpha_values)
     #plt.ylabel(u'Target (1-α) v. Test Coverage Δ')
     plt.ylabel(u'Test Coverage')
     plt.legend()
     plt.savefig(OUTPUT_RESULT_DIR / "Coverage_Alpha.png")
     plt.show()
     plt.plot(alpha_values, eff_norm, color='blue', label='Normal CP')
-    plt.plot(alpha_values, eff_amb, color='red', label = 'CP w/ Ambiguous Ground Truth')
+    plt.plot(alpha_values, eff_amb, color='red', label = 'WebCP')
     plt.plot(alpha_values, eff_oracle, color='green', label = 'Oracle CP')
     plt.title(u'Target v. Test Efficiency')
     plt.xlabel(u'Target Coverage')

@@ -181,6 +181,31 @@ def monte_carlo_cp_deprecated(predictions: torch.Tensor, plausibilities: torch.T
     qhat = np.quantile(cal_scores.numpy(), q_level, interpolation='higher')
     return 1-qhat
 
+def monte_carlo_cp_eff(predictions: torch.Tensor, plausibilities: torch.Tensor, alpha: float, sample_num: int):
+    with torch.no_grad():
+        assert predictions.size(dim=0) == plausibilities.size(dim=0)
+
+        assert predictions.size(dim=1) == plausibilities.size(dim=1) - 1
+
+        distro = OneHotCategorical(probs=plausibilities)
+
+        cal_scores = []
+        for i in range(sample_num):
+            this_result = distro.sample()
+
+            this_actual = this_result[this_result[:, plausibilities.size(dim=1) - 1] != 1][:, :-1]
+            this_pred = predictions[this_result[:, plausibilities.size(dim=1) - 1] != 1]
+
+            cal_scores.append(1 - torch.sum(this_actual * this_pred, axis=1) if this_actual.dim() > 1 else torch.tensor([]))
+        return compute_threshold_amb_eff(cal_scores, alpha)
+def compute_threshold_amb_eff(cal_scores: list, alpha):
+    m = len(cal_scores)
+
+    exp_loss = lambda threshold: 1/m * sum([(torch.sum(this_cal_score <= threshold) + 1) / (this_cal_score.size(dim=0) + 1) for this_cal_score in cal_scores])
+    
+    N = sum([this_cal_score.size(dim=0) for this_cal_score in cal_scores])
+    return  1 - brentq(lambda trial_thresh: exp_loss(trial_thresh) - ((N+1.)/N*(1-alpha) - 1/(N+1)), 0, 1)
+
 def monte_carlo_cp(predictions: torch.Tensor, plausibilities: torch.Tensor, alpha: float, sample_num: int):
     assert predictions.size(dim=0) == plausibilities.size(dim=0)
 

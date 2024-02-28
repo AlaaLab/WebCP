@@ -55,11 +55,14 @@ if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
     DATASET = 'MedMNIST'
 if True:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_caption-results")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet")
+    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-selenium_imagenet_new-caption-results")
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0220_selenium_reverse-image-selenium_imagenet_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-search-selenium_imagenet_new")
+    #CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-selenium_imagenet_new-caption-results")
+    #IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-selenium_imagenet_plausibilities")
+    #CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-search-selenium_imagenet_new")
     DATASET =  'ImageNet'
-if True:
+if False:
     CONTEXT_DIRECTORY = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size")
@@ -88,13 +91,15 @@ else:
 classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-1", device=0) #"valhalla/distilbart-mnli-12-1" "facebook/bart-large-mnli"
 # Encode Labels
 #label_embed = model.encode([label for label in LABELS.values()])
-labels = [label for label in LABELS.values()]
+labels = [label.split(',')[0] for label in LABELS.values()]
+print(labels)
 #pseudo_embed = model.encode([label for label in PSEUDO_LABELS.values()])
 # Loop through caption folders
 for label in os.listdir(CONTEXT_DIRECTORY):
     if label.endswith("events.log"): 
         continue
     print("Beginning Score Generation: {label}".format(label=label))
+    if label > "110": continue
     os.makedirs(IMAGE_PLAUSIBILITIES / label, exist_ok=True)
     n = 0
     for file in os.listdir(CONTEXT_DIRECTORY / label):
