@@ -48,7 +48,6 @@ def scores_converter(scores, labels):
         score_vals.append(dict_scores[label])
     return score_vals
 
-
 # Parameters
 if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
@@ -86,6 +85,12 @@ elif DATASET == 'Caltech256':
 else:
     LABELS = None
 
+GENERATE_DEBUG_CSV = True
+if GENERATE_DEBUG_CSV:
+    DEBUG_CSV_PATH = Path("~/reesearch/debug.csv")
+    debug_header_list = ["index", "label", "filename", "main_caption", "secondary_captions", "score_junk", "score_label", "score_nonlabels"] + [f"score_{i}" for i in range(len(LABELS))] + [f"first_score_{i}" for i in range(len(LABELS))] + [f"second_score_{i}" for i in range(len(LABELS))]# + [f"clip_score_label"] + [f"clip_score_{i}" for i in range(len(LABELS))]
+    debug_dict = {k: [] for k in debug_header_list}
+torch.set_grad_enabled(False)
 # Model Initialization
 #model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2') #'sentence-transformers/all-mpnet-base-v2') 'sentence-transformers/all-MiniLM-L6-v2') 'sentence-transformers/msmarco-bert-base-dot-v5')
 #classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-1", device=0) #"valhalla/distilbart-mnli-12-1" "facebook/bart-large-mnli"
@@ -182,8 +187,36 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         print(captions[1:])
         print(scores)
         print('------------------------------')'''
+        if GENERATE_DEBUG_CSV:
+            debug_dict["index"].append(f"{int(str(label))},{int(str(file)[0:str(file).rindex('_')])}")
+            debug_dict["label"].append(int(str(label)))
+            debug_dict["filename"].append(str(int(str(file)[0:str(file).rindex('_')])))
+            debug_dict["score_junk"].append(junk_prob.numpy())
+            debug_dict["score_label"].append(scores[int(str(label))].numpy())
+            debug_dict["score_nonlabels"].append(torch.sum(scores[:-1]).numpy() - scores[int(str(label))].numpy())
+            try:
+                with open(IMAGE_DIR / label / f"{int(str(file)[0:str(file).rindex('_')])}.caption", "r") as main_caption_file:
+                    debug_dict["main_caption"].append("\n".join([line.rstrip() for line in main_caption_file]))
+            except Exception as e:
+                debug_dict["main_caption"].append("ERROR")
+            
+            try:
+                with open(CAPTION_DIR / label / f"{int(str(file)[0:str(file).rindex('_')])}.pkl", 'rb') as sec_caption_file:
+                    sec_caption_list = (pickle.load(sec_caption_file))
+                    debug_dict["secondary_captions"].append("\n".join(sec_caption_list))
+            except Exception as e:
+                debug_dict["secondary_captions"].append("ERROR")
+            for i in range(len(LABELS)):
+                debug_dict[f"score_{i}"].append(scores[i].numpy())
+                debug_dict[f"first_score_{i}"].append(main_score[i].numpy())
+                debug_dict[f"second_score_{i}"].append(second_score[i].numpy())
+
+
         torch.save(scores, IMAGE_PLAUSIBILITIES / label / (file.split(".")[0]+'_plausibilities'))
         avgn += 1
         if avgn >= 10: break
     print(avg/avgn)
     print(avg2/avgn)
+
+if GENERATE_DEBUG_CSV:
+    pd.DataFrame(debug_dict).set_index("index").sort_values(by=['label', 'filename']).to_csv(DEBUG_CSV_PATH)
