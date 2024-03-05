@@ -56,7 +56,8 @@ if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
     DATASET = 'FitzPatrick17k'
 if False:
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
+    #IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
+    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_0114_reverse-image-selenium_medmnist_new-plausibilities")
     DATASET = 'MedMNIST'
 if True:
     IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size_plausibilities")
@@ -95,10 +96,9 @@ if GENERATE_DEBUG_CSV:
 torch.set_grad_enabled(False)
 # Model Initialization
 #model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2') #'sentence-transformers/all-mpnet-base-v2') 'sentence-transformers/all-MiniLM-L6-v2') 'sentence-transformers/msmarco-bert-base-dot-v5')
-# classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-1", device=0) #"valhalla/distilbart-mnli-12-1" "facebook/bart-large-mnli"
+#classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-1", device=0) #"valhalla/distilbart-mnli-12-1" "facebook/bart-large-mnli"
 # Encode Labels
 #label_embed = model.encode([label for label in LABELS.values()])
-labels = [label for label in LABELS.values()]
 #pseudo_embed = model.encode([label for label in PSEUDO_LABELS.values()])
 # Loop through caption folders
 for label in os.listdir(IMAGE_PLAUSIBILITIES):
@@ -115,13 +115,14 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         if not file.endswith("_main"): continue
         name = file.split("_")[0]
         main_score = torch.load(IMAGE_PLAUSIBILITIES / label / (name+'_main'))
-        second_score = torch.load(IMAGE_PLAUSIBILITIES / label / (name+'_second'))[1:]
+        second_score = torch.load(IMAGE_PLAUSIBILITIES / label / (name+'_second'))
         # Calculate embedding of main caption
         #main_embed = model.encode(captions[0])
         # Calculate softmax dot product between embedding and list of labels
         if True:
             main_score = main_score
-            #main_score = torch.nn.functional.softmax(main_score*20.0, dim=0)
+            main_score = torch.nn.functional.softmax(main_score*500.0)
+            #print(main_score)
         if False:
             main_score = torch.from_numpy(label_embed @ main_embed)
             main_score = torch.nn.functional.softmax(main_score*200.0)
@@ -137,11 +138,12 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         #second_embed = model.encode(captions[1:])
         # Calculate softmax average dot product between embedding and list of pseudo-labels
         if True:
+            #second_score = second_score[1:]
             #maxitem = torch.argmax(second_score, dim=1)
             #second_score=second_score*0.0
             #for i in range(len(maxitem)): second_score[i][maxitem[i]]=1.0
             second_score = torch.mean(second_score, dim=0)
-            #topx = max(1, int(1.0*second_score.shape[0]))
+            #topx = max(1, int(0.2*second_score.shape[0]))
             #second_score, _ = torch.sort(second_score, dim=0)
             #second_score = torch.mean(second_score[-1*topx:], dim=0)
         if False:
@@ -175,15 +177,15 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         # Calculate final plausibility and store
         scores = torch.mul(main_score, second_score)
         junk_prob = 1.0 - torch.sum(scores)
+        avg2 += main_score[int(label)]
         avg += scores[int(label)]
-        avg2 += second_score[int(label)]
         scores = torch.cat([scores, torch.tensor([junk_prob])])
         scores[scores < 0.0] = 0.0
-        #if junk_prob > 1.0:
+        #if junk_prob > 0.95:
         #    scores = scores * 0.0
         #    scores[len(scores)-1] = 1.0
         #avg += scores[int(label)]
-        print(scores[int(label)], second_score[int(label)], torch.argmax(scores))
+        #print(scores[int(label)], second_score[int(label)], torch.argmax(scores))
         '''print(LABELS["0"])
         print(title)
         print(main_score[0])
