@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 import pickle
 import json
 import argparse
-
+import yaml
 script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
 base_path = script_path.parent.absolute()
 sys.path.append(base_path / 'cp')
@@ -48,32 +48,20 @@ args = parser.parse_args()
 reader = open(base_path + "\\experiment_configs\\"  + args.exp)
 config = json.load(reader)'''
 
-if False:
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_flava")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_clipa")
-if False:
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_flava")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_clipa")
-if False:
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-14-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_flava")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_clipa")
-if True:
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_02-20-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_flava")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_clipa")
-if False:
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experimenpythts\\google-caltech256_01-17-24_flava")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_clipa")
 
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "config", help="the path to the yaml config file.", type=str)
+args = parser.parse_args()
+config = {}
+with open(args.config, "r") as yaml_file:
+    config = yaml.safe_load(yaml_file)
+
+for k, v in config.items():
+    if (k[-4:] == '_dir'):
+        config[k] = Path(v)
+
+RESULTS_DIRECTORY = config['experiment_result_store_dir']
 OUTPUT_RESULT_DIR = RESULTS_DIRECTORY
 
 CALIB_SIZE_CURVE = False

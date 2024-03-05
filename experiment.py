@@ -26,6 +26,7 @@ from utils.caltech256_classes import CALTECH256_CLASSES
 from cp.conformal_prediction_methods import *
 from cp.metrics import *
 import easyocr
+import yaml
 
 #Parse Arguments
 #-----------------------------------------------------------------------------------
@@ -48,78 +49,50 @@ USE_SOFTMAX = True
 
 TEST_RELOAD = False
 CALIB_RELOAD =  True
+GENERATE_DEBUG_CSV = True 
 
-if False:
-    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-pets\\oxford-pets")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_flava")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_clipa")
-    dataset = 'OxfordPets'
-if False:
-    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\google-fitz17k\\fitzpatrick-17k")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_flava")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-fitz17k_01-06-24_clipa")
-    dataset = 'FitzPatrick17k'
-if False:
-    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets\\selenium-medmnist\\medmnist_microscopy")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_0114_reverse-image-selenium_medmnist_new-plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_0114_reverse-image-selenium_medmnist_new")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-14-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_flava")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_clipa")
-    dataset = 'MedMNIST'
-if True:
-    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\imagenet_2012")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0220_selenium_reverse-image-selenium_imagenet_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_02-20-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_flava")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_clipa")
-    dataset =  'ImageNet'
-if False:
-    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\256_ObjectCategories")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_owlvit")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_flava")
-    #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_clipa")
-    dataset =  'Caltech256'
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "config", help="the path to the yaml config file.", type=str)
+args = parser.parse_args()
+config = {}
+with open(args.config, "r") as yaml_file:
+    config = yaml.safe_load(yaml_file)
 
-if dataset == 'MedMNIST':
+for k, v in config.items():
+    if (k[-4:] == '_dir'):
+        config[k] = Path(v)
+
+TEST_IMAGE_DIRECTORY = config['test_image_dir']
+IMAGE_PLAUSIBILITIES = config['image_plausibility_store_dir']
+RESULTS_DIRECTORY = config['experiment_result_store_dir']
+CALIB_IMAGE_DIRECTORY = config['scraping_store_dir']
+DATASET = config['dataset']
+
+if DATASET == 'MedMNIST':
     LABELS = MEDMNIST_CLASSES
-elif dataset == 'FitzPatrick17k':
+elif DATASET == 'FitzPatrick17k':
     LABELS = FITZ17K_CLASSES
-elif dataset == 'OxfordPets':
+elif DATASET == 'OxfordPets':
     LABELS = PETS_CLASSES
-elif dataset == 'ImageNet':
+elif DATASET == 'ImageNet':
     LABELS = IMAGENET_CLASSES
-elif dataset == 'Caltech256':
+elif DATASET == 'Caltech256':
     LABELS = CALTECH256_CLASSES
 else:
     LABELS = None
 
 
 if GENERATE_DEBUG_CSV: 
-    CALIB_DEBUG_CSV_PATH = Path("~/reesearch/debug_imagenet.csv")
+    CALIB_DEBUG_CSV_PATH = Path(RESULTS_DIRECTORY / "calib_debug.csv")
     calib_debug_df = pd.read_csv(CALIB_DEBUG_CSV_PATH).set_index("index")
     calib_debug_df['clip_score_label'] = -1.0
     for i in range(len(LABELS)):
         calib_debug_df[f'clip_score_{i}'] = -1.0
 
-    CALIB_OUTPUT_CSV_PATH = Path("~/reesearch/debug_clip_imagenet.csv")
+    CALIB_OUTPUT_CSV_PATH = Path(RESULTS_DIRECTORY / "calib_output.csv")
 
-    TEST_DEBUG_CSV_PATH = Path("~/reesearch/debug_test_imagenet.csv")
+    TEST_DEBUG_CSV_PATH = Path(RESULTS_DIRECTORY / "test_output.csv")
     test_debug_keys = ["index", "label", "filename", "clip_score_label"] + [f"clip_score_{i}" for i in range(len(LABELS))]
     test_debug_dict = {k: [] for k in test_debug_keys}
     # test_debug_dict = pd.read_csv(TEST_DEBUG_CSV_PATH)    

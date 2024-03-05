@@ -13,6 +13,7 @@ import pickle
 import traceback
 from transformers import pipeline
 from sentence_transformers import SentenceTransformer, util
+import yaml 
 
 script_path = Path(os.path.dirname(os.path.abspath(sys.argv[0])))
 base_path = script_path.parent.absolute()
@@ -39,35 +40,22 @@ def scores_converter(scores, labels):
     return score_vals
 
 
-# Parameters
-if False:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_caption-results")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets")
-    DATASET = 'OxfordPets'
-if False:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_caption-results")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k")
-    DATASET = 'FitzPatrick17k'
-if True:
-    CONTEXT_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_medmnist_25size_caption-results")
-    IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_medmnist_25size_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_medmnist_25size")
-    DATASET = 'MedMNIST'
-if True:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-selenium_imagenet_new-caption-results")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0220_selenium_reverse-image-selenium_imagenet_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-search-selenium_imagenet_new")
-    #CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-selenium_imagenet_new-caption-results")
-    #IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-selenium_imagenet_plausibilities")
-    #CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-search-selenium_imagenet_new")
-    DATASET =  'ImageNet'
-if False:
-    CONTEXT_DIRECTORY = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size_caption-results")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size")
-    DATASET =  'Caltech256'
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "config", help="the path to the yaml config file.", type=str)
+args = parser.parse_args()
+config = {}
+with open(args.config, "r") as yaml_file:
+    config = yaml.safe_load(yaml_file)
+
+for k, v in config.items():
+    if (k[-4:] == '_dir'):
+        config[k] = Path(v)
+
+CONTEXT_DIRECTORY = config['reverse_image_store_dir']
+IMAGE_PLAUSIBILITIES = config['image_plausibility_store_dir']
+CALIB_IMAGE_DIRECTORY = config['scraping_store_dir']
+DATASET = config['dataset']
 
 if DATASET == 'MedMNIST':
     LABELS = MEDMNIST_CLASSES

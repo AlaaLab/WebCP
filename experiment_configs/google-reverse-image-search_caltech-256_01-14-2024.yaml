@@ -1,8 +1,13 @@
 # global
+dataset: "Caltech256"
 class_list_csv: "utils\\caltech256_class.csv"
 
-# data mining (step 1)
 scraping_store_dir: "C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size"
+reverse_image_store_dir: "C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size_caption-results"
+image_plausibility_store_dir: "C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_plausibilities"
+test_image_dir: ""
+experiment_result_store_dir: ""
+# data mining (step 1)
 num_threads: 6 # the number of concurrent threads per worker process if not using selenium; the number of selenium scraping instances if using selenium.
 set_size: 30 # the number of calibration examples targeted to be scraped, after skipping errors. 
 max_dim_size: 600 # each scraped image will be scaled proportionally such that its largest dimension will be of this size.
@@ -10,7 +15,6 @@ class_id_start: null # if scraping crashed, this can be used to specify which cl
 class_id_end: null # similar purpose as class_id_start, but now to specify which class ID to end at. set null if desired to end at the "maximum" class ID. 
 class_id_exclude_list: [] # similar purpose as class_id_start and class_id_end, but used to specify which class IDs to skip. leave empty if not used. 
 use_webpage_context: False
-reverse_image_store_dir: "C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size_caption-results"
 num_similar_captions: 15
 num_selenium_threads: 12
 # web_detection_store_dir: "/home/hwei/reesearch/datasets/web_scraping_1225_google-hybrid_web-detection_medmnist_50size_web_detection"
