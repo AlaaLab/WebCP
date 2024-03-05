@@ -50,16 +50,17 @@ if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k")
     DATASET = 'FitzPatrick17k'
-if False:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_caption-results")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
+if True:
+    CONTEXT_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_medmnist_25size_caption-results")
+    IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_medmnist_25size_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_medmnist_25size")
     DATASET = 'MedMNIST'
-if True:
-    CONTEXT_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_caption-results")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet")
+if False:
+    CONTEXT_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size_caption-results")
+    IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size")
     DATASET =  'ImageNet'
-if True:
+if False:
     CONTEXT_DIRECTORY = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size_caption-results")
     IMAGE_PLAUSIBILITIES = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("C:\\Users\\Robert Wei\\reesearch\\datasets\\web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size")

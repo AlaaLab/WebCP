@@ -58,10 +58,12 @@ if False:
 if False:
     IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
     DATASET = 'MedMNIST'
-if False:
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_plausibilities")
-    DATASET =  'ImageNet'
 if True:
+    IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size_plausibilities")
+    CAPTION_DIR = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size_caption-results")
+    IMAGE_DIR = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size")
+    DATASET =  'ImageNet'
+if False:
     IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
     CAPTION_DIR = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size_caption-results")
     IMAGE_DIR = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size")
@@ -87,8 +89,8 @@ else:
 
 GENERATE_DEBUG_CSV = True
 if GENERATE_DEBUG_CSV:
-    DEBUG_CSV_PATH = Path("~/reesearch/debug.csv")
-    debug_header_list = ["index", "label", "filename", "main_caption", "secondary_captions", "score_junk", "score_label", "score_nonlabels"] + [f"score_{i}" for i in range(len(LABELS))] + [f"first_score_{i}" for i in range(len(LABELS))] + [f"second_score_{i}" for i in range(len(LABELS))]# + [f"clip_score_label"] + [f"clip_score_{i}" for i in range(len(LABELS))]
+    DEBUG_CSV_PATH = Path("~/reesearch/debug_imagenet.csv")
+    debug_header_list = ["index", "label", "filename", "main_caption", "secondary_captions", "score_junk", "score_label", "score_nonlabels", "first_score_label", "second_score_label"] + [f"score_{i}" for i in range(len(LABELS))] + [f"first_score_{i}" for i in range(len(LABELS))] + [f"second_score_{i}" for i in range(len(LABELS))]# + [f"clip_score_label"] + [f"clip_score_{i}" for i in range(len(LABELS))]
     debug_dict = {k: [] for k in debug_header_list}
 torch.set_grad_enabled(False)
 # Model Initialization
@@ -100,6 +102,8 @@ labels = [label for label in LABELS.values()]
 #pseudo_embed = model.encode([label for label in PSEUDO_LABELS.values()])
 # Loop through caption folders
 for label in os.listdir(IMAGE_PLAUSIBILITIES):
+    if str(label) < "550": 
+        continue
     print("Beginning Plausibility Generation: {label}".format(label=label))
     os.makedirs(IMAGE_PLAUSIBILITIES / label, exist_ok=True)
     # Loop through image captions
@@ -193,6 +197,8 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
             debug_dict["score_junk"].append(junk_prob.numpy())
             debug_dict["score_label"].append(scores[int(str(label))].numpy())
             debug_dict["score_nonlabels"].append(torch.sum(scores[:-1]).numpy() - scores[int(str(label))].numpy())
+            debug_dict["first_score_label"].append(main_score[int(str(label))].numpy())
+            debug_dict["second_score_label"].append(second_score[int(str(label))].numpy())
             try:
                 with open(IMAGE_DIR / label / f"{int(str(file)[0:str(file).rindex('_')])}.caption", "r") as main_caption_file:
                     debug_dict["main_caption"].append("\n".join([line.rstrip() for line in main_caption_file]))

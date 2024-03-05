@@ -45,8 +45,8 @@ USE_SOFTMAX = True
 LOGIT_SCALE = 100.0 if USE_SOFTMAX else 1.0
 
 MODEL_ID = "hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" #"hf-hub:laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg" "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
-TEST_RELOAD = True
-CALIB_RELOAD =  False
+TEST_RELOAD = False
+CALIB_RELOAD =  True
 GENERATE_DEBUG_CSV = True
 
 if False:
@@ -67,13 +67,13 @@ if False:
     CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist")
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-03-24_1")
     dataset = 'MedMNIST'
-if False:
-    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\imagenet_2012")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet_plausibilities")
-    CALIB_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0103_selenium_reverse-image-selenium_imagenet")
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
-    dataset =  'ImageNet'
 if True:
+    TEST_IMAGE_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\imagenet_2012")
+    IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size_plausibilities")
+    CALIB_IMAGE_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_imagenet_25size")
+    RESULTS_DIRECTORY = Path("/home/hwei/reesearch/experiments/google-imagenet_01-15-24_1")
+    dataset =  'ImageNet'
+if False:
     TEST_IMAGE_DIRECTORY = Path("/home/hwei/reesearch/datasets/256_ObjectCategories")
     IMAGE_PLAUSIBILITIES = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
     CALIB_IMAGE_DIRECTORY = Path("/home/hwei/reesearch/datasets/web_scraping_0114_selenium_reverse-image-search-selenium_caltech-256_25size")
@@ -95,15 +95,15 @@ else:
 
 
 if GENERATE_DEBUG_CSV: 
-    CALIB_DEBUG_CSV_PATH = Path("~/reesearch/debug.csv")
+    CALIB_DEBUG_CSV_PATH = Path("~/reesearch/debug_imagenet.csv")
     calib_debug_df = pd.read_csv(CALIB_DEBUG_CSV_PATH).set_index("index")
     calib_debug_df['clip_score_label'] = -1.0
     for i in range(len(LABELS)):
         calib_debug_df[f'clip_score_{i}'] = -1.0
 
-    CALIB_OUTPUT_CSV_PATH = Path("~/reesearch/debug_clip.csv")
+    CALIB_OUTPUT_CSV_PATH = Path("~/reesearch/debug_clip_imagenet.csv")
 
-    TEST_DEBUG_CSV_PATH = Path("~/reesearch/debug_test.csv")
+    TEST_DEBUG_CSV_PATH = Path("~/reesearch/debug_test_imagenet.csv")
     test_debug_keys = ["index", "label", "filename", "clip_score_label"] + [f"clip_score_{i}" for i in range(len(LABELS))]
     test_debug_dict = {k: [] for k in test_debug_keys}
     # test_debug_dict = pd.read_csv(TEST_DEBUG_CSV_PATH)    
@@ -171,6 +171,8 @@ else:
     calib_plausibility_score_arr = []
     #Loop through image
     for label in os.listdir(IMAGE_PLAUSIBILITIES):
+        if str(label) < "550": 
+            continue
         print("Beginning Calibration Embedding Generation: {label}".format(label=label))
         avg = torch.zeros(len(LABELS.items())+1)
         num_images = 0

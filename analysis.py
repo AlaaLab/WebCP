@@ -61,16 +61,16 @@ if False:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
     OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_1")
 if True:
-    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
-    OUTPUT_RESULT_DIR = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_1")
+    RESULTS_DIRECTORY = Path("/home/hwei/reesearch/experiments/google-imagenet_01-15-24_1")
+    OUTPUT_RESULT_DIR = Path("/home/hwei/reesearch/experiments/google-imagenet_01-15-24_1")
 
-CALIB_SIZE_CURVE = False
-ALPHA_CURVE = False
-UNCERTAIN_HIST = False
-PLAUSIBILITY_HISTOGRAM = False
+CALIB_SIZE_CURVE = True
+ALPHA_CURVE = True
+UNCERTAIN_HIST = True
+PLAUSIBILITY_HISTOGRAM = True
 ORACLE = True
 ALPHA = 0.5
-NUM_SAMPLES = 1000
+NUM_SAMPLES = 50
 LOGIT_SCALE = 100.0
 
 # Load Files

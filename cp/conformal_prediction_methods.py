@@ -182,34 +182,39 @@ def monte_carlo_cp_deprecated(predictions: torch.Tensor, plausibilities: torch.T
     return 1-qhat
 
 def monte_carlo_cp(predictions: torch.Tensor, plausibilities: torch.Tensor, alpha: float, sample_num: int):
-    assert predictions.size(dim=0) == plausibilities.size(dim=0)
+    with torch.no_grad():
+        assert predictions.size(dim=0) == plausibilities.size(dim=0)
 
-    assert predictions.size(dim=1) == plausibilities.size(dim=1) - 1
+        assert predictions.size(dim=1) == plausibilities.size(dim=1) - 1
 
-    distro = OneHotCategorical(probs=plausibilities)
+        distro = OneHotCategorical(probs=plausibilities)
 
-    results = distro.sample(sample_shape=torch.Size([sample_num]))
+        # results = distro.sample(sample_shape=torch.Size([sample_num]))
 
-    cp_actual = []
-    cp_pred = []
-    for i in range(sample_num):
-        this_actual = []
-        this_pred = []
-        for j in range(predictions.size(dim=0)):
-            if (results[i][j][plausibilities.size(dim=1) - 1] == 1):
-                continue
+        # cp_actual = []
+        # cp_pred = []
+        cal_scores = []
+        for i in range(sample_num):
+            this_result = distro.sample()
 
-            this_actual.append(results[i][j][0:plausibilities.size(dim=1) - 1])
-            this_pred.append(predictions[j])
-        cp_actual.append(torch.stack(this_actual, dim=0) if len(this_actual) > 0 else torch.tensor([]))
-        cp_pred.append(torch.stack(this_pred, dim=0) if len(this_pred) > 0 else torch.tensor([]))
-    return compute_threshold_amb(cp_actual, cp_pred, alpha)
-def compute_threshold_amb(actual: list, pred: list, alpha):
-    assert len(actual) == len(pred)
-    m = len(actual)
+            this_actual = this_result[this_result[:, plausibilities.size(dim=1) - 1] != 1][:, :-1]
+            this_pred = predictions[this_result[:, plausibilities.size(dim=1) - 1] != 1]
+
+            if i % 1000 == 0:
+                print(i)
+
+            cal_scores.append(1 - torch.sum(this_actual * this_pred, axis=1) if this_actual.dim() > 1 else torch.tensor([]))
+            # cp_actual.append(torch.stack(this_actual, dim=0) if len(this_actual) > 0 else torch.tensor([]))
+            # cp_pred.append(torch.stack(this_pred, dim=0) if len(this_pred) > 0 else torch.tensor([]))
+        return compute_threshold_amb(cal_scores, alpha)
+def compute_threshold_amb(cal_scores: list, alpha):
+    # assert len(actual) == len(pred)
+    # m = len(actual)
+    m = len(cal_scores)
 
     #this is from https://github.com/aangelopoulos/conformal-prediction/blob/main/notebooks/imagenet-smallest-sets.ipynb
-    cal_scores = [(1 - torch.sum(this_actual * this_pred, axis=1) if this_actual.dim() > 1 else torch.tensor([])) for this_actual, this_pred in zip(actual, pred)]
+    # cal_scores = [(1 - torch.sum(this_actual * this_pred, axis=1) if this_actual.dim() > 1 else torch.tensor([])) for this_actual, this_pred in zip(actual, pred)]
+    # debug_scores = [torch.sum(this_actual * this_pred, axis=1) if this_actual.dim() > 1 else torch.tensor([]) for this_actual, this_pred in zip(actual, pred)]
 
     exp_loss = lambda threshold: 1/m * sum([(torch.sum(this_cal_score <= threshold) + 1) / (this_cal_score.size(dim=0) + 1) for this_cal_score in cal_scores])
     
