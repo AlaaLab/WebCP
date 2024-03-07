@@ -2,9 +2,9 @@
 dataset: "Caltech256"
 class_list_csv: "utils/caltech256_class.csv"
 
-scraping_store_dir: "/home/hwei/reesearch/datasets/flickr_web_scraping_0224_selenium_reverse-image-search-selenium_NEW_CAPTION_METHOD_caltech-256_25size"
-reverse_image_store_dir: "/home/hwei/reesearch/datasets/flickr_web_scraping_0224_selenium_reverse-image-search-selenium_NEW_CAPTION_METHOD_caltech-256_25size_caption-results"
-image_plausibility_store_dir: "/home/hwei/reesearch/datasets/flickr_web_scraping_0224_selenium_reverse-image-search-selenium_NEW_CAPTION_METHOD_caltech-256_plausibilities"
+scraping_store_dir: "/home/hwei/reesearch/datasets/flickr_web_scraping_0224_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_caltech-256_25size"
+reverse_image_store_dir: "/home/hwei/reesearch/datasets/flickr_web_scraping_0224_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_caltech-256_25size_caption-results"
+image_plausibility_store_dir: "/home/hwei/reesearch/datasets/flickr_web_scraping_0224_selenium_reverse-image-search-selenium_NEW-CAPTION-METHOD_caltech-256_plausibilities"
 test_image_dir: ""
 experiment_result_store_dir: ""
 
