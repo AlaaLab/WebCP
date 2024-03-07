@@ -114,7 +114,6 @@ for label in os.listdir(CONTEXT_DIRECTORY):
         second_search = captions[0:min(10, len(captions))]
         label_set = list(set(PSEUDO_LABELS.values()))
         for caption in second_search:
-            label_set = label_set + [labels[int(label)]]
             score_dict = classifier(caption, label_set, multi_label=True)
             score = scores_converter(score_dict, list(PSEUDO_LABELS.values()))
             second_score.append(score)
