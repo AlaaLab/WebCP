@@ -48,6 +48,12 @@ args = parser.parse_args()
 reader = open(base_path + "\\experiment_configs\\"  + args.exp)
 config = json.load(reader)'''
 
+dataset = 'caltech256'
+source = 'google'
+version = '2'
+
+if True:
+    RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_flickr_1")
 if False:
     #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_1")
     #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-pets_01-06-24_owlvit")
@@ -63,7 +69,7 @@ if False:
     #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_owlvit")
     #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_flava")
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-medmnist_01-06-24_clipa")
-if True:
+if False:
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_02-20-24_1")
     #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_owlvit")
     #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-imagenet_01-15-24_flava")
@@ -74,6 +80,8 @@ if False:
     #RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experimenpythts\\google-caltech256_01-17-24_flava")
     RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\google-caltech256_01-17-24_clipa")
 
+folder_name = source + "_" + dataset + "_" + version
+RESULTS_DIRECTORY = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\analysis\\ambiguous_experiments\\" + folder_name)
 OUTPUT_RESULT_DIR = RESULTS_DIRECTORY
 
 CALIB_SIZE_CURVE = False
@@ -103,7 +111,7 @@ if ORACLE:
     oracle_metrics = []
     norm_metrics = []
     amb_metrics = []
-    alpha_values = [0.01] + [0.05*i for i in range(1, 5)] + [0.1*i for i in range(3, 10)]# + [0.95]
+    alpha_values = [0.05*i for i in range(1, 5)] + [0.1*i for i in range(3, 10)]# + [0.95]
     print(alpha_values)
     # Generate numpy matrices
     calib_sim_score_arr_np = calib_sim_score_arr.detach().cpu().numpy()

@@ -27,16 +27,6 @@ from utils.caltech256_classes import CALTECH256_CLASSES, CALTECH256_GENERIC_CLAS
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("CUDA ENABLED: {}".format(str(torch.cuda.is_available())))
 
-def mean_pooling(model_output, attention_mask):
-    token_embeddings = model_output[0] #First element of model_output contains all token embeddings
-    input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
-    return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-
-def sliding_window(tokens):
-    tokens = tokens.unfold(dimension=1, size=512, step=256)
-    out = model(**tokens)
-    embed = mean_pooling(out, tokens['attention_mask'])
-
 def scores_converter(scores, labels):
     dict_scores = {}
     n = len(scores['labels'])
@@ -48,38 +38,25 @@ def scores_converter(scores, labels):
         score_vals.append(dict_scores[label])
     return score_vals
 
-# Parameters
-if False:
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\oxford-pets\\web_scraping_0105_selenium_reverse-image-selenium_oxford-pets_plausibilities")
-    DATASET = 'OxfordPets'
-if False:
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\fitzpatrick17k\\web_scraping_0105_selenium_reverse-image-selenium_fitz-17k_plausibilities")
-    DATASET = 'FitzPatrick17k'
-if False:
-    #IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_1225_reverse-image-selenium_medmnist_plausibilities")
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\medmnist\\web_scraping_0114_reverse-image-selenium_medmnist_new-plausibilities")
-    DATASET = 'MedMNIST'
-if True:
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0220_selenium_reverse-image-selenium_imagenet_plausibilities")
-    #IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\imagenet\\web_scraping_0114_selenium_reverse-image-selenium_imagenet_plausibilities")
-    DATASET =  'ImageNet'
-if False:
-    IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\caltech256\\web_scraping_0114_selenium_reverse-search-selenium_caltech-256_plausibilities")
-    DATASET =  'Caltech256'
+dataset = 'caltech256'
+source = 'google'
+version = '2'
 
-if DATASET == 'MedMNIST':
+folder_name = source + "_" + dataset + "_" + version
+IMAGE_PLAUSIBILITIES = Path("C:\\Documents\\Alaa Lab\\CP-CLIP\\datasets2\\" + dataset + "\\" + folder_name + "_plausibilities")
+if dataset == 'medmnist':
     LABELS = MEDMNIST_CLASSES
     PSEUDO_LABELS = MEDMNIST_GENERIC_CLASSES
-elif DATASET == 'FitzPatrick17k':
+elif dataset == 'fitzpatrick17k':
     LABELS = FITZ17K_CLASSES
     PSEUDO_LABELS = FITZ17K_GENERIC_CLASSES
-elif DATASET == 'OxfordPets':
+elif dataset == 'oxford-pets':
     LABELS = PETS_CLASSES
     PSEUDO_LABELS = PETS_GENERIC_CLASSES
-elif DATASET == 'ImageNet':
+elif dataset == 'imagenet':
     LABELS = IMAGENET_CLASSES
     PSEUDO_LABELS = IMAGENET_GENERIC_CLASSES
-elif DATASET == 'Caltech256':
+elif dataset == "caltech256":
     LABELS = CALTECH256_CLASSES
     PSEUDO_LABELS = CALTECH256_GENERIC_CLASSES
 else:
@@ -99,6 +76,7 @@ torch.set_grad_enabled(False)
 #pseudo_embed = model.encode([label for label in PSEUDO_LABELS.values()])
 # Loop through caption folders
 for label in os.listdir(IMAGE_PLAUSIBILITIES):
+
     print("Beginning Plausibility Generation: {label}".format(label=label))
     os.makedirs(IMAGE_PLAUSIBILITIES / label, exist_ok=True)
     # Loop through image captions
@@ -116,8 +94,8 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         # Calculate softmax dot product between embedding and list of labels
         if True:
             main_score = main_score
-            main_score = torch.nn.functional.softmax(main_score*500.0)
-            #print(main_score)
+            #print(main_score[0])
+            main_score = torch.nn.functional.softmax(main_score*100.0)
         if False:
             main_score = torch.from_numpy(label_embed @ main_embed)
             main_score = torch.nn.functional.softmax(main_score*200.0)
@@ -187,36 +165,8 @@ for label in os.listdir(IMAGE_PLAUSIBILITIES):
         print(captions[1:])
         print(scores)
         print('------------------------------')'''
-        if GENERATE_DEBUG_CSV:
-            debug_dict["index"].append(f"{int(str(label))},{int(str(file)[0:str(file).rindex('_')])}")
-            debug_dict["label"].append(int(str(label)))
-            debug_dict["filename"].append(str(int(str(file)[0:str(file).rindex('_')])))
-            debug_dict["score_junk"].append(junk_prob.numpy())
-            debug_dict["score_label"].append(scores[int(str(label))].numpy())
-            debug_dict["score_nonlabels"].append(torch.sum(scores[:-1]).numpy() - scores[int(str(label))].numpy())
-            try:
-                with open(IMAGE_DIR / label / f"{int(str(file)[0:str(file).rindex('_')])}.caption", "r") as main_caption_file:
-                    debug_dict["main_caption"].append("\n".join([line.rstrip() for line in main_caption_file]))
-            except Exception as e:
-                debug_dict["main_caption"].append("ERROR")
-            
-            try:
-                with open(CAPTION_DIR / label / f"{int(str(file)[0:str(file).rindex('_')])}.pkl", 'rb') as sec_caption_file:
-                    sec_caption_list = (pickle.load(sec_caption_file))
-                    debug_dict["secondary_captions"].append("\n".join(sec_caption_list))
-            except Exception as e:
-                debug_dict["secondary_captions"].append("ERROR")
-            for i in range(len(LABELS)):
-                debug_dict[f"score_{i}"].append(scores[i].numpy())
-                debug_dict[f"first_score_{i}"].append(main_score[i].numpy())
-                debug_dict[f"second_score_{i}"].append(second_score[i].numpy())
-
-
         torch.save(scores, IMAGE_PLAUSIBILITIES / label / (file.split(".")[0]+'_plausibilities'))
         avgn += 1
         if avgn >= 10: break
     print(avg/avgn)
     print(avg2/avgn)
-
-if GENERATE_DEBUG_CSV:
-    pd.DataFrame(debug_dict).set_index("index").sort_values(by=['label', 'filename']).to_csv(DEBUG_CSV_PATH)
